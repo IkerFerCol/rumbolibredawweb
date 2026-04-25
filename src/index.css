@@ -1,0 +1,15 @@
+@import "tailwindcss";
+:root {
+  /* Primary - Light Mode */
+  --primary-50: #C6B49F;
+  --primary-100: #BBAC9B;
+  --primary-200: #C3A179;
+  --primary-300: #B3916B;
+  --primary-400: #B57A35;
+  --primary-500: #965F21;
+  --primary-600: #6E4517;
+  --primary-700: #442B0D;
+  --primary-800: #3C2810;
+  --primary-900: #392714;
+  --primary-950: #352718;
+}
