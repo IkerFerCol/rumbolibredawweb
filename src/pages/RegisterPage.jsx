@@ -2,6 +2,73 @@ import { useState } from "react";
 import fondo from "../assets/fondoavionloginregister.jpg";
 import Footer from "../components/Footer";
 import api from "../services/api";
+import logo from "../assets/logorumbolibre.png";
+
+// ─── Estilos de animación ─────────────────────────────────────────────────────
+const animationStyles = `
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+  
+  @keyframes scaleIn {
+    from {
+      opacity: 0;
+      transform: scale(0.8);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+  
+  .animate-fadeInUp {
+    animation: fadeInUp 0.6s ease-out forwards;
+  }
+  
+  .animate-fadeIn {
+    animation: fadeIn 0.8s ease-out forwards;
+  }
+  
+  .animate-scaleIn {
+    animation: scaleIn 0.5s ease-out forwards;
+  }
+  
+  .delay-100 {
+    animation-delay: 0.1s;
+  }
+  
+  .delay-200 {
+    animation-delay: 0.2s;
+  }
+  
+  .delay-300 {
+    animation-delay: 0.3s;
+  }
+  
+  .delay-400 {
+    animation-delay: 0.4s;
+  }
+  
+  .opacity-0 {
+    opacity: 0;
+  }
+`;
 
 // ─── Paleta de colores AirGold ────────────────────────────────────────────────
 // Color principal: rgba(150, 95, 33, 1)  →  #965f21
@@ -351,13 +418,13 @@ const RegisterForm = ({ onToast }) => {
     <div className="flex flex-col gap-0">
       {/* Encabezado */}
       <h2
-        className="text-[19px] font-medium mb-1"
+        className="text-[19px] font-medium mb-1 animate-fadeInUp delay-100 opacity-0"
         style={{ fontFamily: "'Playfair Display', serif", color: "rgba(26, 18, 8, 1)" }}
       >
         Únete a RumboLibre
       </h2>
       <p
-        className="text-[13px] font-light mb-6"
+        className="text-[13px] font-light mb-6 animate-fadeInUp delay-200 opacity-0"
         style={{ color: "rgba(156, 128, 96, 1)" }}
       >
         Crea tu cuenta y empieza a volar
@@ -517,10 +584,7 @@ const RegisterForm = ({ onToast }) => {
   );
 };
 
-// ─── Componente principal: RegisterPage ────────────────────────────────────────
-
-
-// ─── Componente principal: RegisterPage (CORREGIDO CON FOOTER FIJO) ────────────
+// ─── Componente principal: RegisterPage (CON ANIMACIONES) ────────────
 export default function RegisterPage() {
   const [toast, setToast] = useState({ message: "", visible: false });
 
@@ -531,6 +595,8 @@ export default function RegisterPage() {
 
   return (
     <>
+      <style>{animationStyles}</style>
+      
       {/* Fuentes de Google */}
       <link
         href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600&family=DM+Sans:wght@300;400;500&display=swap"
@@ -546,7 +612,7 @@ export default function RegisterPage() {
       >
         {/* Fondo imagen */}
         <div
-          className="fixed inset-0 -z-10"
+          className="fixed inset-0 -z-10 animate-fadeIn"
           style={{
             backgroundImage: `url(${fondo})`,
             backgroundSize: "cover",
@@ -556,7 +622,7 @@ export default function RegisterPage() {
 
         {/* Overlay elegante */}
         <div
-          className="fixed inset-0 -z-10"
+          className="fixed inset-0 -z-10 animate-fadeIn"
           style={{
             background: "linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.8))"
           }}
@@ -568,21 +634,21 @@ export default function RegisterPage() {
         {/* Contenido principal - flex-grow para empujar el footer hacia abajo */}
         <div className="flex-grow flex flex-col items-center justify-center pt-10 pb-8 px-4">
           {/* Marca */}
-          <div className="flex flex-col items-center gap-1.5 mb-8 relative z-10">
-            <div
-              className="w-12 h-12 rounded-2xl flex items-center justify-center mb-1"
-              style={{ background: "rgba(150, 95, 33, 1)" }}
-            >
-              <PlaneIcon className="w-6 h-6 text-[#fff9f2]" />
-            </div>
-            <span
-              className="text-[22px] font-semibold tracking-wide"
+          <div className="flex flex-col items-center gap-1.5 -mt-16 mb-8 relative z-10 animate-fadeInUp">
+            <img
+              src={logo}
+              alt="RumboLibre"
+              className="w-32 h-32 object-cover animate-scaleIn"
+            />
+          
+            <span 
+              className="text-[22px] font-semibold tracking-wide animate-fadeInUp delay-100 opacity-0"
               style={{ fontFamily: "'Playfair Display', serif", color: "rgba(255, 249, 242, 1)" }}
             >
               RumboLibre
             </span>
-            <span
-              className="text-[11px] uppercase tracking-[0.14em] font-light"
+            <span 
+              className="text-[11px] uppercase tracking-[0.14em] font-light animate-fadeInUp delay-200 opacity-0"
               style={{ color: "rgba(220, 200, 170, 1)" }}
             >
               Viaja con elegancia
@@ -591,7 +657,7 @@ export default function RegisterPage() {
 
           {/* Tarjeta */}
           <div
-            className="w-full max-w-[420px] rounded-[20px] p-8 relative z-10"
+            className="w-full max-w-[420px] rounded-[20px] p-8 relative z-10 animate-fadeInUp delay-300 opacity-0"
             style={{
               background: "rgba(255, 249, 242, 1)",
               border: "0.5px solid rgba(150, 95, 33, 0.22)",

@@ -1,7 +1,22 @@
-import { useState } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import fondo from "../assets/fondoavionloginregister.jpg";
 import Footer from "../components/Footer";
-import { motion } from "framer-motion";
+import Header from "../components/Header";
+import { motion, AnimatePresence } from "framer-motion";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
+
+// ─── Mapa estático de aeropuertos (fallback si la API falla) ─────────────────
+const AEROPUERTOS_ESTATICOS = [
+  { id: 1, nombre: "Adolfo Suárez Madrid-Barajas", codigoIata: "MAD", ciudad: "Madrid", pais: "España" },
+  { id: 2, nombre: "El Prat", codigoIata: "BCN", ciudad: "Barcelona", pais: "España" },
+  { id: 3, nombre: "Palma de Mallorca", codigoIata: "PMI", ciudad: "Palma de Mallorca", pais: "España" },
+  { id: 4, nombre: "Málaga-Costa del Sol", codigoIata: "AGP", ciudad: "Málaga", pais: "España" },
+  { id: 5, nombre: "Valencia", codigoIata: "VLC", ciudad: "Valencia", pais: "España" },
+  { id: 6, nombre: "Sevilla", codigoIata: "SVQ", ciudad: "Sevilla", pais: "España" },
+  { id: 7, nombre: "Bilbao", codigoIata: "BIO", ciudad: "Bilbao", pais: "España" },
+  { id: 8, nombre: "Alicante-Elche", codigoIata: "ALC", ciudad: "Alicante", pais: "España" },
+];
 
 // ─── Iconos ───────────────────────────────────────────────────────────────────
 const SearchIcon = () => (
@@ -9,86 +24,108 @@ const SearchIcon = () => (
     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
   </svg>
 );
-
 const CalendarIcon = () => (
-  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
   </svg>
 );
-
-const UserIcon = () => (
-  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-  </svg>
-);
-
-const PlaneIcon = ({ className = "w-6 h-6" }) => (
-  <svg className={className} viewBox="0 0 24 24" fill="currentColor">
+const PlaneIcon = ({ className = "w-6 h-6", style }) => (
+  <svg className={className} style={style} viewBox="0 0 24 24" fill="currentColor">
     <path d="M21 16v-2l-8-5V3.5c0-.83-.67-1.5-1.5-1.5S10 2.67 10 3.5V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z" />
   </svg>
 );
-
-const StarIcon = () => (
-  <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-  </svg>
-);
-
 const LocationIcon = () => (
   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
   </svg>
 );
-
-const WifiIcon = () => (
-  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8.111 16.404a5.5 5.5 0 017.778 0M12 20h.01m-7.08-7.071c3.904-3.905 10.236-3.905 14.14 0M1.394 9.393c5.857-5.857 15.355-5.857 21.213 0" />
+const SwapIcon = () => (
+  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
   </svg>
 );
 
-const PoolIcon = () => (
-  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 10h18M6 14h12M8 18h8M5 6h14a2 2 0 012 2v10a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2z" />
-  </svg>
-);
+// ─── Select de aeropuerto ────────────────────────────────────────────────────
+const AirportSelect = ({ placeholder, value, onChange, aeropuertos, disabled }) => {
+  return (
+    <div style={{ position: "relative", width: "100%" }}>
+      <span style={{ position: "absolute", left: "0.75rem", top: "50%", transform: "translateY(-50%)", zIndex: 10, pointerEvents: "none", color: "rgba(150,95,33,0.7)" }}>
+        <LocationIcon />
+      </span>
+      <select
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        disabled={disabled}
+        style={{
+          width: "100%",
+          paddingLeft: "2.25rem",
+          paddingRight: "0.75rem",
+          paddingTop: "0.75rem",
+          paddingBottom: "0.75rem",
+          borderRadius: "0.5rem",
+          fontSize: "0.875rem",
+          outline: "none",
+          border: "1px solid rgba(150,95,33,0.2)",
+          background: "#faf7f2",
+          transition: "border-color 0.2s",
+          cursor: "pointer",
+          appearance: "none"
+        }}
+      >
+        <option value="">{placeholder}</option>
+        {aeropuertos.map((a) => (
+          <option key={a.id} value={a.codigoIata}>
+            {a.codigoIata} – {a.ciudad}
+          </option>
+        ))}
+      </select>
+    </div>
+  );
+};
 
-const BreakfastIcon = () => (
-  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-  </svg>
-);
-
-// ─── Destinos destacados ──────────────────────────────────────────────────────
-const destinations = [
-  { id: 1, name: "París", country: "Francia", price: 299, image: "https://images.unsplash.com/photo-1502602898657-3e91760cbb34?w=400", rating: 4.8 },
-  { id: 2, name: "Roma", country: "Italia", price: 249, image: "https://images.unsplash.com/photo-1552832230-c0197dd311b5?w=400", rating: 4.7 },
-  { id: 3, name: "Londres", country: "Reino Unido", price: 279, image: "https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?w=400", rating: 4.6 },
-  { id: 4, name: "Nueva York", country: "EE.UU.", price: 399, image: "https://images.unsplash.com/photo-1496442226666-8d4d0e62e6e9?w=400", rating: 4.9 },
-  { id: 5, name: "Tokio", country: "Japón", price: 449, image: "https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?w=400", rating: 4.9 },
-  { id: 6, name: "Barcelona", country: "España", price: 199, image: "https://images.unsplash.com/photo-1583422409516-2895a77efded?w=400", rating: 4.7 },
-];
-
-// ─── Categorías de viaje ──────────────────────────────────────────────────────
-const categories = [
-  { id: 1, name: "Playas", icon: "🏖️", color: "#e3f2fd" },
-  { id: 2, name: "Montañas", icon: "🏔️", color: "#e8f5e9" },
-  { id: 3, name: "Ciudades", icon: "🌆", color: "#fff3e0" },
-  { id: 4, name: "Aventura", icon: "🧗", color: "#fce4ec" },
-  { id: 5, name: "Lujo", icon: "✨", color: "#f3e5f5" },
-  { id: 6, name: "Familia", icon: "👨‍👩‍👧‍👦", color: "#e0f7fa" },
-];
-
-// ─── Testimonios ──────────────────────────────────────────────────────────────
-const testimonials = [
-  { id: 1, name: "María García", text: "Excelente plataforma, encontré vuelos increíbles a muy buen precio.", rating: 5, image: "https://randomuser.me/api/portraits/women/1.jpg" },
-  { id: 2, name: "Carlos López", text: "La atención al cliente es fantástica, me ayudaron en todo momento.", rating: 5, image: "https://randomuser.me/api/portraits/men/2.jpg" },
-  { id: 3, name: "Ana Martínez", text: "Mi viaje a París fue inolvidable gracias a RumboLibre.", rating: 5, image: "https://randomuser.me/api/portraits/women/3.jpg" },
-];
-
-// ─── Card de destino ──────────────────────────────────────────────────────────
-const DestinationCard = ({ destination }) => {
+// ─── Card de vuelo ───────────────────────────────────────────────────────────
+const VueloCard = ({ vuelo, onSelect, aeropuertoMap }) => {
   const [isHovered, setIsHovered] = useState(false);
+
+  const formatFecha = (fechaStr) => {
+    if (!fechaStr) return "Fecha no disponible";
+    const fecha = new Date(fechaStr);
+    return fecha.toLocaleDateString("es-ES", { day: "2-digit", month: "2-digit", year: "numeric" });
+  };
+
+  const formatHora = (fechaStr) => {
+    if (!fechaStr) return "--:--";
+    const fecha = new Date(fechaStr);
+    return fecha.toLocaleTimeString("es-ES", { hour: "2-digit", minute: "2-digit" });
+  };
+
+  const calcularDuracion = (salida, llegada) => {
+    if (!salida || !llegada) return "N/A";
+    const diff = new Date(llegada) - new Date(salida);
+    const horas = Math.floor(diff / 3600000);
+    const minutos = Math.floor((diff % 3600000) / 60000);
+    return `${horas}h ${minutos}min`;
+  };
+
+  const getCiudad = () => {
+    const origenId = vuelo.origenId || vuelo.origen;
+    const destinoId = vuelo.destinoId || vuelo.destino;
+    const origenAeropuerto = aeropuertoMap[origenId];
+    const destinoAeropuerto = aeropuertoMap[destinoId];
+    const origenPorCodigo = Object.values(aeropuertoMap).find(a => a.codigoIata === origenId);
+    const destinoPorCodigo = Object.values(aeropuertoMap).find(a => a.codigoIata === destinoId);
+    const origen = origenAeropuerto || origenPorCodigo;
+    const destino = destinoAeropuerto || destinoPorCodigo;
+    return {
+      origenCiudad: origen?.ciudad || String(origenId) || "Origen",
+      destinoCiudad: destino?.ciudad || String(destinoId) || "Destino",
+      origenCodigo: origen?.codigoIata || String(origenId) || "???",
+      destinoCodigo: destino?.codigoIata || String(destinoId) || "???"
+    };
+  };
+
+  const { origenCiudad, destinoCiudad, origenCodigo, destinoCodigo } = getCiudad();
 
   return (
     <motion.div
@@ -96,181 +133,156 @@ const DestinationCard = ({ destination }) => {
       onHoverStart={() => setIsHovered(true)}
       onHoverEnd={() => setIsHovered(false)}
       className="rounded-xl overflow-hidden cursor-pointer bg-white"
-      style={{
-        boxShadow: isHovered ? "0 12px 28px rgba(150,95,33,0.15)" : "0 2px 8px rgba(0,0,0,0.08)",
-        transition: "box-shadow 0.3s ease",
-      }}
+      style={{ boxShadow: isHovered ? "0 12px 28px rgba(150,95,33,0.15)" : "0 2px 8px rgba(0,0,0,0.08)", transition: "box-shadow 0.3s ease" }}
     >
-      <div className="relative h-48 overflow-hidden">
-        <img
-          src={destination.image}
-          alt={destination.name}
-          className="w-full h-full object-cover transition-transform duration-500"
-          style={{ transform: isHovered ? "scale(1.1)" : "scale(1)" }}
-        />
-        <div
-          className="absolute top-2 right-2 px-2 py-1 rounded-full text-xs font-medium"
-          style={{ background: "rgba(0,0,0,0.7)", color: "white" }}
-        >
-          ⭐ {destination.rating}
-        </div>
-      </div>
       <div className="p-4">
-        <div className="flex items-start justify-between">
+        <div className="flex justify-between items-start mb-3">
           <div>
-            <h3 className="font-semibold text-base" style={{ color: "rgba(26, 18, 8, 1)" }}>
-              {destination.name}
+            <h3 className="font-semibold text-base" style={{ color: "rgba(26,18,8,1)" }}>
+              {vuelo.aerolineaNombre || "Aerolínea"}
             </h3>
-            <p className="text-xs mt-0.5" style={{ color: "rgba(156, 128, 96, 1)" }}>
-              {destination.country}
-            </p>
+            <p className="text-xs" style={{ color: "rgba(156,128,96,1)" }}>{vuelo.numeroVuelo || "Vuelo"}</p>
           </div>
           <div className="text-right">
-            <p className="text-lg font-bold" style={{ color: "rgba(150, 95, 33, 1)" }}>
-              ${destination.price}
-            </p>
-            <p className="text-xs" style={{ color: "rgba(156, 128, 96, 1)" }}>por noche</p>
+            <p className="text-lg font-bold" style={{ color: "rgba(150,95,33,1)" }}>${vuelo.precio?.toFixed(2) || "0"}</p>
+            <p className="text-xs" style={{ color: "rgba(156,128,96,1)" }}>por persona</p>
           </div>
         </div>
+
+        <div className="text-center mb-3">
+          <p className="text-sm font-medium" style={{ color: "rgba(26,18,8,1)" }}>
+            {origenCiudad} → {destinoCiudad}
+          </p>
+          <p className="text-xs" style={{ color: "rgba(156,128,96,1)" }}>
+            {origenCodigo} → {destinoCodigo}
+          </p>
+        </div>
+
+        <div className="flex items-center justify-between mb-3">
+          <div className="text-center flex-1">
+            <p className="font-bold text-lg">{formatHora(vuelo.fechaSalida)}</p>
+          </div>
+          <div className="flex-1 px-2">
+            <div className="relative flex items-center justify-center">
+              <div className="border-t border-gray-300 w-full absolute"></div>
+              <span className="relative bg-white px-1">
+                <PlaneIcon className="w-4 h-4" style={{ color: "rgba(150,95,33,0.6)" }} />
+              </span>
+            </div>
+            <p className="text-xs text-center text-gray-400 mt-1">
+              {calcularDuracion(vuelo.fechaSalida, vuelo.fechaLlegada)}
+            </p>
+          </div>
+          <div className="text-center flex-1">
+            <p className="font-bold text-lg">{formatHora(vuelo.fechaLlegada)}</p>
+          </div>
+        </div>
+
+        <div className="flex justify-between items-center text-xs mb-3">
+          <span style={{ color: "rgba(156,128,96,1)" }}>📅 {formatFecha(vuelo.fechaSalida)}</span>
+          <span style={{ color: vuelo.plazasDisponibles > 10 ? "#4caf50" : "#ff9800", fontWeight: 500 }}>
+            {vuelo.plazasDisponibles} plazas
+          </span>
+        </div>
+
         <button
-          className="w-full mt-3 py-2 rounded-lg text-sm font-medium transition-all duration-200"
-          style={{
-            background: "rgba(150, 95, 33, 1)",
-            color: "white",
-          }}
-          onMouseEnter={(e) => (e.currentTarget.style.background = "rgba(110, 68, 18, 1)")}
-          onMouseLeave={(e) => (e.currentTarget.style.background = "rgba(150, 95, 33, 1)")}
+          onClick={() => onSelect(vuelo)}
+          className="w-full py-2 rounded-lg text-sm font-medium transition-all duration-200"
+          style={{ background: "rgba(150,95,33,1)", color: "white", border: "none", cursor: "pointer" }}
+          onMouseEnter={(e) => (e.currentTarget.style.background = "rgba(110,68,18,1)")}
+          onMouseLeave={(e) => (e.currentTarget.style.background = "rgba(150,95,33,1)")}
         >
-          Ver oferta
+          Seleccionar vuelo
         </button>
       </div>
     </motion.div>
   );
 };
 
-// ─── Hero Section ─────────────────────────────────────────────────────────────
-const HeroSection = () => {
-  const [destination, setDestination] = useState("");
-  const [checkIn, setCheckIn] = useState("");
-  const [checkOut, setCheckOut] = useState("");
-  const [guests, setGuests] = useState(2);
+// ─── Hero / Buscador ─────────────────────────────────────────────────────────
+const HeroSection = ({ onSearch, aeropuertos, cargandoAeropuertos }) => {
+  const [origen, setOrigen] = useState("");
+  const [destino, setDestino] = useState("");
+  const [fecha, setFecha] = useState("");
+  const [swapping, setSwapping] = useState(false);
+
+  const today = new Date().toISOString().split("T")[0];
+
+  const intercambiar = () => {
+    setSwapping(true);
+    setTimeout(() => setSwapping(false), 400);
+    const tmp = origen;
+    setOrigen(destino);
+    setDestino(tmp);
+  };
+
+  const handleSearch = () => {
+    onSearch({ origen, destino, fecha });
+  };
+
+  const inputBase = {
+    width: "100%",
+    paddingLeft: "2.25rem",
+    paddingRight: "0.75rem",
+    paddingTop: "0.75rem",
+    paddingBottom: "0.75rem",
+    borderRadius: "0.5rem",
+    fontSize: "0.875rem",
+    outline: "none",
+    border: "1px solid rgba(150,95,33,0.2)",
+    background: "#faf7f2",
+    transition: "border-color 0.2s",
+  };
 
   return (
     <div className="relative rounded-2xl overflow-hidden mb-12">
-      {/* Imagen de fondo */}
-      <div
-        className="absolute inset-0"
-        style={{
-          backgroundImage: `url(${fondo})`,
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-        }}
-      />
+      <div className="absolute inset-0" style={{ backgroundImage: `url(${fondo})`, backgroundSize: "cover", backgroundPosition: "center" }} />
       <div className="absolute inset-0" style={{ background: "linear-gradient(135deg, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.5) 100%)" }} />
-      
+
       <div className="relative z-10 px-6 py-16 md:py-20 text-center">
-        <motion.h1
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
+        <motion.h1 initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}
           className="text-3xl md:text-5xl font-bold mb-4"
-          style={{ fontFamily: "'Playfair Display', serif", color: "white" }}
-        >
-          Encuentra tu próximo destino
+          style={{ fontFamily: "'Playfair Display', serif", color: "white" }}>
+          Encuentra tu próximo vuelo
         </motion.h1>
-        <motion.p
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.1 }}
-          className="text-base md:text-lg mb-8"
-          style={{ color: "rgba(255,249,242,0.9)" }}
-        >
-          Vuelos y hoteles al mejor precio con RumboLibre
+        <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.1 }}
+          className="text-base md:text-lg mb-8" style={{ color: "rgba(255,249,242,0.9)" }}>
+          Los mejores precios en vuelos con RumboLibre
         </motion.p>
 
-        {/* Barra de búsqueda */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.2 }}
-          className="max-w-4xl mx-auto bg-white rounded-2xl p-4 shadow-xl"
-        >
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
-            <div className="relative">
-              <LocationIcon />
-              <input
-                type="text"
-                placeholder="¿Dónde vas?"
-                value={destination}
-                onChange={(e) => setDestination(e.target.value)}
-                className="w-full pl-8 pr-3 py-3 rounded-lg text-sm outline-none transition-all"
-                style={{
-                  border: "1px solid rgba(150,95,33,0.2)",
-                  background: "#faf7f2",
-                }}
-                onFocus={(e) => (e.target.style.borderColor = "rgba(150,95,33,1)")}
-                onBlur={(e) => (e.target.style.borderColor = "rgba(150,95,33,0.2)")}
-              />
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.2 }}
+          className="max-w-5xl mx-auto bg-white rounded-2xl p-4 shadow-xl">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-3 items-end">
+            <div>
+              <AirportSelect placeholder="Origen" value={origen}
+                onChange={(val) => setOrigen(val)}
+                aeropuertos={aeropuertos} disabled={cargandoAeropuertos} />
             </div>
-            <div className="relative">
-              <CalendarIcon />
-              <input
-                type="date"
-                placeholder="Check-in"
-                value={checkIn}
-                onChange={(e) => setCheckIn(e.target.value)}
-                className="w-full pl-8 pr-3 py-3 rounded-lg text-sm outline-none transition-all"
-                style={{
-                  border: "1px solid rgba(150,95,33,0.2)",
-                  background: "#faf7f2",
-                }}
-                onFocus={(e) => (e.target.style.borderColor = "rgba(150,95,33,1)")}
-                onBlur={(e) => (e.target.style.borderColor = "rgba(150,95,33,0.2)")}
-              />
+            <div className="flex justify-center items-center">
+              <button onClick={intercambiar} title="Intercambiar"
+                style={{ background: "rgba(150,95,33,0.1)", transform: swapping ? "rotate(180deg)" : "rotate(0deg)", transition: "transform 0.4s ease, background 0.2s", border: "none", cursor: "pointer", padding: "0.5rem", borderRadius: "9999px" }}>
+                <SwapIcon />
+              </button>
             </div>
-            <div className="relative">
-              <CalendarIcon />
-              <input
-                type="date"
-                placeholder="Check-out"
-                value={checkOut}
-                onChange={(e) => setCheckOut(e.target.value)}
-                className="w-full pl-8 pr-3 py-3 rounded-lg text-sm outline-none transition-all"
-                style={{
-                  border: "1px solid rgba(150,95,33,0.2)",
-                  background: "#faf7f2",
-                }}
-                onFocus={(e) => (e.target.style.borderColor = "rgba(150,95,33,1)")}
-                onBlur={(e) => (e.target.style.borderColor = "rgba(150,95,33,0.2)")}
-              />
+            <div>
+              <AirportSelect placeholder="Destino" value={destino}
+                onChange={(val) => setDestino(val)}
+                aeropuertos={aeropuertos} disabled={cargandoAeropuertos} />
             </div>
-            <div className="relative">
-              <UserIcon />
-              <select
-                value={guests}
-                onChange={(e) => setGuests(Number(e.target.value))}
-                className="w-full pl-8 pr-3 py-3 rounded-lg text-sm outline-none appearance-none cursor-pointer transition-all"
-                style={{
-                  border: "1px solid rgba(150,95,33,0.2)",
-                  background: "#faf7f2",
-                }}
-                onFocus={(e) => (e.target.style.borderColor = "rgba(150,95,33,1)")}
-                onBlur={(e) => (e.target.style.borderColor = "rgba(150,95,33,0.2)")}
-              >
-                {[1, 2, 3, 4, 5, 6].map(num => (
-                  <option key={num} value={num}>{num} {num === 1 ? "huésped" : "huéspedes"}</option>
-                ))}
-              </select>
+            <div style={{ position: "relative", display: "flex", alignItems: "center" }}>
+              <span style={{ position: "absolute", left: "0.75rem", zIndex: 10, pointerEvents: "none", color: "rgba(150,95,33,0.7)" }}>
+                <CalendarIcon />
+              </span>
+              <input type="date" value={fecha} min={today}
+                onChange={(e) => setFecha(e.target.value)}
+                style={inputBase} />
             </div>
           </div>
-          <button
-            className="w-full mt-3 py-3 rounded-xl text-sm font-medium transition-all duration-200 flex items-center justify-center gap-2"
-            style={{ background: "rgba(150,95,33,1)", color: "white" }}
-            onMouseEnter={(e) => (e.currentTarget.style.background = "rgba(110,68,18,1)")}
-            onMouseLeave={(e) => (e.currentTarget.style.background = "rgba(150,95,33,1)")}
-          >
-            <SearchIcon />
-            Buscar vuelos y hoteles
+
+          <button onClick={handleSearch}
+            className="w-full mt-3 py-3 rounded-xl text-sm font-medium flex items-center justify-center gap-2"
+            style={{ background: "rgba(150,95,33,1)", color: "white", border: "none", cursor: "pointer", transition: "background 0.2s" }}>
+            <SearchIcon /> Buscar vuelos
           </button>
         </motion.div>
       </div>
@@ -278,144 +290,175 @@ const HeroSection = () => {
   );
 };
 
-// ─── Componente principal: HomePage ───────────────────────────────────────────
+// ─── Componente principal ────────────────────────────────────────────────────
 export default function HomePage() {
+  const navigate = useNavigate();
+  const [aeropuertos, setAeropuertos] = useState(AEROPUERTOS_ESTATICOS);
+  const [cargandoAeropuertos, setCargandoAeropuertos] = useState(false);
+  const [buscando, setBuscando] = useState(false);
+  const [resultadosBusqueda, setResultadosBusqueda] = useState(null);
+  const [error, setError] = useState("");
+
+  const aeropuertoMap = useMemo(() => {
+    const map = {};
+    aeropuertos.forEach((a) => { map[a.id] = a; });
+    return map;
+  }, [aeropuertos]);
+
+  useEffect(() => {
+    cargarAeropuertos();
+  }, []);
+
+  const cargarAeropuertos = async () => {
+    setCargandoAeropuertos(true);
+    try {
+      const res = await axios.get("http://localhost:8080/api/aeropuertos");
+      if (res.data && res.data.length > 0) setAeropuertos(res.data);
+    } catch (err) {
+      console.warn("Usando aeropuertos estáticos (API no disponible):", err.message);
+    } finally {
+      setCargandoAeropuertos(false);
+    }
+  };
+
+  const buscarVuelos = async ({ origen, destino, fecha }) => {
+    setBuscando(true);
+    setError("");
+    setResultadosBusqueda(null);
+
+    try {
+      const params = new URLSearchParams();
+      if (origen) params.append("origen", origen);
+      if (destino) params.append("destino", destino);
+      if (fecha) params.append("fecha", fecha);
+      params.append("pasajeros", "1");
+
+      const url = `http://localhost:8080/api/vuelos/disponibles?${params.toString()}`;
+      const res = await axios.get(url);
+      setResultadosBusqueda(res.data);
+      
+      if (res.data.length === 0) {
+        if (origen || destino || fecha) {
+          let mensaje = "No hay vuelos disponibles";
+          if (origen && destino && fecha) {
+            mensaje = `No hay vuelos disponibles de ${origen} a ${destino} el ${fecha}`;
+          } else if (origen && destino) {
+            mensaje = `No hay vuelos disponibles de ${origen} a ${destino}`;
+          } else if (origen) {
+            mensaje = `No hay vuelos disponibles desde ${origen}`;
+          } else if (destino) {
+            mensaje = `No hay vuelos disponibles hacia ${destino}`;
+          } else if (fecha) {
+            mensaje = `No hay vuelos disponibles el ${fecha}`;
+          }
+          setError(mensaje);
+        } else {
+          setError("No hay vuelos disponibles en este momento.");
+        }
+      }
+    } catch (err) {
+      console.error("Error buscando vuelos:", err);
+      setError("Error al buscar vuelos. Comprueba tu conexión e inténtalo de nuevo.");
+      setResultadosBusqueda([]);
+    } finally {
+      setBuscando(false);
+    }
+  };
+
+  const seleccionarVuelo = (vuelo) => {
+    const origenId = Number(vuelo.origenId || vuelo.origen);
+    const destinoId = Number(vuelo.destinoId || vuelo.destino);
+    const vueloEnriquecido = {
+      ...vuelo,
+      origenNombre: aeropuertoMap[origenId]?.codigoIata || vuelo.origen,
+      destinoNombre: aeropuertoMap[destinoId]?.codigoIata || vuelo.destino,
+      origenCiudad: aeropuertoMap[origenId]?.ciudad || "",
+      destinoCiudad: aeropuertoMap[destinoId]?.ciudad || "",
+    };
+    localStorage.setItem("vueloSeleccionado", JSON.stringify(vueloEnriquecido));
+    navigate("/reserva");
+  };
+
+  const limpiarBusqueda = () => { setResultadosBusqueda(null); setError(""); };
+  const esBusqueda = resultadosBusqueda !== null;
+
   return (
     <>
-      <link
-        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=DM+Sans:wght@300;400;500;600&display=swap"
-        rel="stylesheet"
-      />
-
+      <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
       <div className="min-h-screen flex flex-col relative" style={{ fontFamily: "'DM Sans', sans-serif" }}>
-        {/* Fondo fijo */}
         <div className="fixed inset-0 -z-10" style={{ background: "#fff9f2" }} />
-        
-        {/* Contenido principal */}
+        <Header />
+
         <div className="flex-grow">
           <div className="max-w-7xl mx-auto px-4 py-8">
-            {/* Hero Section */}
-            <HeroSection />
+            <HeroSection onSearch={buscarVuelos} aeropuertos={aeropuertos} cargandoAeropuertos={cargandoAeropuertos} />
 
-            {/* Categorías */}
-            <section className="mb-12">
-              <h2 className="text-2xl font-bold mb-6" style={{ fontFamily: "'Playfair Display', serif", color: "rgba(26,18,8,1)" }}>
-                Explora por categoría
-              </h2>
-              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-                {categories.map((category, index) => (
-                  <motion.div
-                    key={category.id}
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.4, delay: index * 0.05 }}
-                    whileHover={{ y: -4 }}
-                    className="rounded-xl p-5 text-center cursor-pointer transition-all"
-                    style={{ background: category.color }}
-                  >
-                    <div className="text-3xl mb-2">{category.icon}</div>
-                    <p className="font-medium text-sm" style={{ color: "rgba(26,18,8,1)" }}>{category.name}</p>
-                  </motion.div>
-                ))}
-              </div>
-            </section>
+            <AnimatePresence>
+              {buscando && (
+                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="text-center py-12">
+                  <div className="inline-block animate-spin rounded-full h-8 w-8 border-4"
+                    style={{ borderColor: "rgba(150,95,33,0.2)", borderTopColor: "rgba(150,95,33,1)" }} />
+                  <p className="mt-3" style={{ color: "rgba(156,128,96,1)" }}>Buscando vuelos…</p>
+                </motion.div>
+              )}
+            </AnimatePresence>
 
-            {/* Destinos destacados */}
-            <section className="mb-12">
-              <div className="flex justify-between items-center mb-6">
-                <h2 className="text-2xl font-bold" style={{ fontFamily: "'Playfair Display', serif", color: "rgba(26,18,8,1)" }}>
-                  Destinos destacados
-                </h2>
-                <button className="text-sm font-medium transition-opacity hover:opacity-70" style={{ color: "rgba(150,95,33,1)" }}>
-                  Ver todos →
-                </button>
-              </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {destinations.map((destination, index) => (
-                  <motion.div
-                    key={destination.id}
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.4, delay: index * 0.1 }}
-                  >
-                    <DestinationCard destination={destination} />
-                  </motion.div>
-                ))}
-              </div>
-            </section>
+            <AnimatePresence>
+              {error && !buscando && (
+                <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}
+                  className="text-center py-6 px-4 rounded-xl mb-6"
+                  style={{ background: "#fff5f5", border: "1px solid #fecaca" }}>
+                  <p style={{ color: "#dc2626", fontWeight: 500 }}>{error}</p>
+                </motion.div>
+              )}
+            </AnimatePresence>
 
-            {/* Ofertas especiales */}
-            <section className="mb-12">
-              <div
-                className="rounded-2xl p-8 relative overflow-hidden"
-                style={{ background: "linear-gradient(135deg, #965f21 0%, #6e4412 100%)" }}
-              >
-                <div className="absolute top-0 right-0 opacity-10">
-                  <PlaneIcon className="w-48 h-48" />
-                </div>
-                <div className="relative z-10 text-center">
-                  <h2 className="text-2xl md:text-3xl font-bold mb-2" style={{ fontFamily: "'Playfair Display', serif", color: "white" }}>
-                    Ofertas flash
+            {!buscando && (
+              <>
+                <div className="flex justify-between items-center mb-6">
+                  <h2 className="text-2xl font-bold" style={{ fontFamily: "'Playfair Display', serif", color: "rgba(26,18,8,1)" }}>
+                    {esBusqueda ? "Resultados de búsqueda" : "Vuelos disponibles"}
                   </h2>
-                  <p className="text-white/80 mb-6">Hasta 40% de descuento en vuelos seleccionados</p>
-                  <button
-                    className="px-8 py-3 rounded-xl text-sm font-medium transition-all duration-200 bg-white"
-                    style={{ color: "rgba(150,95,33,1)" }}
-                    onMouseEnter={(e) => (e.currentTarget.style.transform = "scale(1.05)")}
-                    onMouseLeave={(e) => (e.currentTarget.style.transform = "scale(1)")}
-                  >
-                    Ver ofertas
-                  </button>
+                  {esBusqueda && (
+                    <button onClick={limpiarBusqueda} className="text-sm font-medium hover:opacity-70 transition-opacity"
+                      style={{ color: "rgba(150,95,33,1)", background: "none", border: "none", cursor: "pointer" }}>
+                      ← Mostrar todos
+                    </button>
+                  )}
                 </div>
-              </div>
-            </section>
 
-            {/* Testimonios */}
-            <section className="mb-12">
-              <h2 className="text-2xl font-bold mb-6 text-center" style={{ fontFamily: "'Playfair Display', serif", color: "rgba(26,18,8,1)" }}>
-                Lo que dicen nuestros viajeros
-              </h2>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                {testimonials.map((testimonial, index) => (
-                  <motion.div
-                    key={testimonial.id}
-                    initial={{ opacity: 0, scale: 0.95 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    transition={{ duration: 0.4, delay: index * 0.1 }}
-                    className="rounded-xl p-6 text-center"
-                    style={{ background: "white", boxShadow: "0 2px 12px rgba(150,95,33,0.08)" }}
-                  >
-                    <img
-                      src={testimonial.image}
-                      alt={testimonial.name}
-                      className="w-16 h-16 rounded-full mx-auto mb-4 object-cover"
-                    />
-                    <div className="flex justify-center gap-1 mb-3">
-                      {[...Array(testimonial.rating)].map((_, i) => (
-                        <StarIcon key={i} style={{ color: "#ffc107" }} />
-                      ))}
-                    </div>
-                    <p className="text-sm mb-3" style={{ color: "rgba(92,74,42,1)" }}>"{testimonial.text}"</p>
-                    <p className="font-semibold text-sm" style={{ color: "rgba(150,95,33,1)" }}>{testimonial.name}</p>
-                  </motion.div>
-                ))}
-              </div>
-            </section>
+                {resultadosBusqueda && resultadosBusqueda.length === 0 ? (
+                  <div className="text-center py-16 bg-white rounded-xl">
+                    <PlaneIcon className="w-16 h-16 mx-auto mb-4 opacity-20" />
+                    <p style={{ color: "rgba(156,128,96,1)" }}>No hay vuelos disponibles en este momento.</p>
+                  </div>
+                ) : resultadosBusqueda && resultadosBusqueda.length > 0 ? (
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {resultadosBusqueda.map((vuelo, index) => (
+                      <motion.div key={vuelo.id} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.4, delay: Math.min(index * 0.08, 0.4) }}>
+                        <VueloCard vuelo={vuelo} onSelect={seleccionarVuelo} aeropuertoMap={aeropuertoMap} />
+                      </motion.div>
+                    ))}
+                  </div>
+                ) : null}
+              </>
+            )}
 
-            {/* Ventajas */}
-            <section className="mb-12">
+            <section className="mt-16">
               <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
                 {[
                   { icon: "✈️", title: "Vuelos baratos", desc: "Compara y ahorra" },
-                  { icon: "🏨", title: "Hoteles exclusivos", desc: "Las mejores ofertas" },
-                  { icon: "🛡️", title: "Seguro incluido", desc: "Viaja tranquilo" },
+                  { icon: "🛡️", title: "Pago seguro", desc: "Transacciones protegidas" },
                   { icon: "🎫", title: "Sin comisiones", desc: "Precios transparentes" },
+                  { icon: "💳", title: "Múltiples métodos", desc: "Paga como quieras" },
                 ].map((item, i) => (
-                  <div key={i} className="text-center p-4">
+                  <motion.div key={i} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.3 + i * 0.1 }} className="text-center p-4">
                     <div className="text-3xl mb-2">{item.icon}</div>
                     <h3 className="font-semibold text-sm mb-1" style={{ color: "rgba(26,18,8,1)" }}>{item.title}</h3>
                     <p className="text-xs" style={{ color: "rgba(156,128,96,1)" }}>{item.desc}</p>
-                  </div>
+                  </motion.div>
                 ))}
               </div>
             </section>

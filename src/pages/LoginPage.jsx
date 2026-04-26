@@ -2,6 +2,73 @@ import { useState } from "react";
 import fondo from "../assets/fondoavionloginregister.jpg";
 import Footer from "../components/Footer";
 import api from "../services/api";
+import logo from "../assets/logorumbolibre.png";
+
+// ─── Estilos de animación ─────────────────────────────────────────────────────
+const animationStyles = `
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+  
+  @keyframes scaleIn {
+    from {
+      opacity: 0;
+      transform: scale(0.8);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+  
+  .animate-fadeInUp {
+    animation: fadeInUp 0.6s ease-out forwards;
+  }
+  
+  .animate-fadeIn {
+    animation: fadeIn 0.8s ease-out forwards;
+  }
+  
+  .animate-scaleIn {
+    animation: scaleIn 0.5s ease-out forwards;
+  }
+  
+  .delay-100 {
+    animation-delay: 0.1s;
+  }
+  
+  .delay-200 {
+    animation-delay: 0.2s;
+  }
+  
+  .delay-300 {
+    animation-delay: 0.3s;
+  }
+  
+  .delay-400 {
+    animation-delay: 0.4s;
+  }
+  
+  .opacity-0 {
+    opacity: 0;
+  }
+`;
 
 // ─── Paleta de colores AirGold ────────────────────────────────────────────────
 // Color principal: rgba(150, 95, 33, 1)  →  #965f21
@@ -188,21 +255,19 @@ const LoginForm = ({ onToast }) => {
 
   return (
     <div className="flex flex-col gap-0">
-      {/* Encabezado */}
       <h2
-        className="text-[19px] font-medium mb-1"
+        className="text-[19px] font-medium mb-1 animate-fadeInUp delay-100 opacity-0"
         style={{ fontFamily: "'Playfair Display', serif", color: "rgba(26, 18, 8, 1)" }}
       >
         Bienvenido de vuelta
       </h2>
       <p
-        className="text-[13px] font-light mb-6"
+        className="text-[13px] font-light mb-6 animate-fadeInUp delay-200 opacity-0"
         style={{ color: "rgba(156, 128, 96, 1)" }}
       >
         Accede a tus reservas y vuelos
       </p>
 
-      {/* Campos */}
       <div className="flex flex-col gap-4 mb-4">
         <InputField
           label="Correo electrónico"
@@ -233,7 +298,6 @@ const LoginForm = ({ onToast }) => {
         />
       </div>
 
-      {/* ¿Olvidaste tu contraseña? */}
       <div className="flex justify-end mb-1">
         <button
           onClick={() => onToast("Revisa tu correo para restablecer tu contraseña")}
@@ -244,7 +308,6 @@ const LoginForm = ({ onToast }) => {
         </button>
       </div>
 
-      {/* Botón principal */}
       <button
         onClick={handleSubmit}
         className="w-full h-12 mt-4 flex items-center justify-center gap-2 rounded-xl text-[15px] font-medium transition-all duration-200 active:scale-[0.99]"
@@ -260,7 +323,6 @@ const LoginForm = ({ onToast }) => {
         Entrar a mi cuenta
       </button>
 
-      {/* Divisor */}
       <div className="flex items-center gap-3 my-5">
         <div className="flex-1 h-px" style={{ background: "rgba(150, 95, 33, 0.18)" }} />
         <span
@@ -272,7 +334,6 @@ const LoginForm = ({ onToast }) => {
         <div className="flex-1 h-px" style={{ background: "rgba(150, 95, 33, 0.18)" }} />
       </div>
 
-      {/* Botones sociales */}
       <div className="flex gap-2.5">
         <SocialButton
           icon={<GoogleIcon />}
@@ -286,7 +347,6 @@ const LoginForm = ({ onToast }) => {
         />
       </div>
 
-      {/* Enlace para ir al registro */}
       <div className="mt-6 text-center">
         <span
           className="text-[12px]"
@@ -317,6 +377,8 @@ export default function LoginPage() {
 
   return (
     <>
+      <style>{animationStyles}</style>
+      
       {/* Fuentes de Google */}
       <link
         href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600&family=DM+Sans:wght@300;400;500&display=swap"
@@ -331,7 +393,7 @@ export default function LoginPage() {
       >
         {/* Fondo imagen - fixed */}
         <div
-          className="fixed inset-0 -z-10"
+          className="fixed inset-0 -z-10 animate-fadeIn"
           style={{
             backgroundImage: `url(${fondo})`,
             backgroundSize: "cover",
@@ -341,7 +403,7 @@ export default function LoginPage() {
 
         {/* Overlay elegante - fixed */}
         <div
-          className="fixed inset-0 -z-10"
+          className="fixed inset-0 -z-10 animate-fadeIn"
           style={{
             background: "linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.8))"
           }}
@@ -353,21 +415,21 @@ export default function LoginPage() {
         {/* Contenido principal - flex-grow */}
         <div className="flex-grow flex flex-col items-center justify-center pt-10 pb-8 px-4">
           {/* Marca */}
-          <div className="flex flex-col items-center gap-1.5 mb-8 relative z-10">
-            <div
-              className="w-12 h-12 rounded-2xl flex items-center justify-center mb-1"
-              style={{ background: "rgba(150, 95, 33, 1)" }}
-            >
-              <PlaneIcon className="w-6 h-6 text-[#fff9f2]" />
-            </div>
-            <span
-              className="text-[22px] font-semibold tracking-wide"
+          <div className="flex flex-col items-center gap-1.5 -mt-16 mb-8 relative z-10 animate-fadeInUp">
+            <img
+              src={logo}
+              alt="RumboLibre"
+              className="w-32 h-32 object-cover animate-scaleIn"
+            />
+
+            <span 
+              className="text-[22px] font-semibold tracking-wide animate-fadeInUp delay-100 opacity-0"
               style={{ fontFamily: "'Playfair Display', serif", color: "rgba(255, 249, 242, 1)" }}
             >
               RumboLibre
             </span>
-            <span
-              className="text-[11px] uppercase tracking-[0.14em] font-light"
+            <span 
+              className="text-[11px] uppercase tracking-[0.14em] font-light animate-fadeInUp delay-200 opacity-0"
               style={{ color: "rgba(220, 200, 170, 1)" }}
             >
               Viaja con elegancia
@@ -376,14 +438,13 @@ export default function LoginPage() {
 
           {/* Tarjeta */}
           <div
-            className="w-full max-w-[420px] rounded-[20px] p-8 relative z-10"
+            className="w-full max-w-[420px] rounded-[20px] p-8 relative z-10 animate-fadeInUp delay-300 opacity-0"
             style={{
               background: "rgba(255, 249, 242, 1)",
               border: "0.5px solid rgba(150, 95, 33, 0.22)",
               boxShadow: "0 2px 32px rgba(150,95,33,0.07)",
             }}
           >
-            {/* Título del login */}
             <div className="mb-2">
               <h1
                 className="text-[24px] font-medium text-center"
@@ -393,7 +454,6 @@ export default function LoginPage() {
               </h1>
             </div>
 
-            {/* Formulario de login */}
             <LoginForm onToast={showToast} />
           </div>
         </div>

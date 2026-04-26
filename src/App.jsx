@@ -3,6 +3,7 @@ import { AuthProvider } from './context/AuthContext'
 import LoginPage from './pages/LoginPage'
 import RegisterPage from './pages/RegisterPage'
 import HomePage from './pages/HomePage'
+import Header from "./components/Header";
 
 
 export default function App() {
