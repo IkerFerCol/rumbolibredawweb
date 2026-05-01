@@ -50,28 +50,14 @@ const SwapIcon = () => (
 const AirportSelect = ({ placeholder, value, onChange, aeropuertos, disabled }) => {
   return (
     <div style={{ position: "relative", width: "100%" }}>
-      <span style={{ position: "absolute", left: "0.75rem", top: "50%", transform: "translateY(-50%)", zIndex: 10, pointerEvents: "none", color: "rgba(150,95,33,0.7)" }}>
+      <span className="absolute left-3 top-1/2 -translate-y-1/2 z-10 pointer-events-none text-[rgba(150,95,33,0.7)] dark:text-gray-400">
         <LocationIcon />
       </span>
       <select
         value={value}
         onChange={(e) => onChange(e.target.value)}
         disabled={disabled}
-        style={{
-          width: "100%",
-          paddingLeft: "2.25rem",
-          paddingRight: "0.75rem",
-          paddingTop: "0.75rem",
-          paddingBottom: "0.75rem",
-          borderRadius: "0.5rem",
-          fontSize: "0.875rem",
-          outline: "none",
-          border: "1px solid rgba(150,95,33,0.2)",
-          background: "#faf7f2",
-          transition: "border-color 0.2s",
-          cursor: "pointer",
-          appearance: "none"
-        }}
+        className="w-full pl-9 pr-3 py-3 text-sm rounded-lg outline-none border border-[rgba(150,95,33,0.2)] dark:border-gray-600 bg-[#faf7f2] dark:bg-gray-700 text-[#1a1208] dark:text-gray-100 transition-colors duration-200 cursor-pointer appearance-none"
       >
         <option value="">{placeholder}</option>
         {aeropuertos.map((a) => (
@@ -109,19 +95,22 @@ const VueloCard = ({ vuelo, onSelect, aeropuertoMap }) => {
   };
 
   const getCiudad = () => {
-    const origenId = vuelo.origenId || vuelo.origen;
-    const destinoId = vuelo.destinoId || vuelo.destino;
-    const origenAeropuerto = aeropuertoMap[origenId];
-    const destinoAeropuerto = aeropuertoMap[destinoId];
-    const origenPorCodigo = Object.values(aeropuertoMap).find(a => a.codigoIata === origenId);
-    const destinoPorCodigo = Object.values(aeropuertoMap).find(a => a.codigoIata === destinoId);
-    const origen = origenAeropuerto || origenPorCodigo;
-    const destino = destinoAeropuerto || destinoPorCodigo;
+    const origenKey = vuelo.origenId || vuelo.origen;
+    const destinoKey = vuelo.destinoId || vuelo.destino;
+
+    const origen = Object.values(aeropuertoMap).find(
+      a => a.id === origenKey || a.codigoIata === origenKey
+    );
+
+    const destino = Object.values(aeropuertoMap).find(
+      a => a.id === destinoKey || a.codigoIata === destinoKey
+    );
+
     return {
-      origenCiudad: origen?.ciudad || String(origenId) || "Origen",
-      destinoCiudad: destino?.ciudad || String(destinoId) || "Destino",
-      origenCodigo: origen?.codigoIata || String(origenId) || "???",
-      destinoCodigo: destino?.codigoIata || String(destinoId) || "???"
+      origenCiudad: origen?.ciudad || origenKey || "Origen",
+      destinoCiudad: destino?.ciudad || destinoKey || "Destino",
+      origenCodigo: origen?.codigoIata || origenKey || "???",
+      destinoCodigo: destino?.codigoIata || destinoKey || "???"
     };
   };
 
@@ -132,54 +121,54 @@ const VueloCard = ({ vuelo, onSelect, aeropuertoMap }) => {
       whileHover={{ y: -8 }}
       onHoverStart={() => setIsHovered(true)}
       onHoverEnd={() => setIsHovered(false)}
-      className="rounded-xl overflow-hidden cursor-pointer bg-white"
+      className="rounded-xl overflow-hidden cursor-pointer bg-white dark:bg-gray-800 transition-colors duration-300"
       style={{ boxShadow: isHovered ? "0 12px 28px rgba(150,95,33,0.15)" : "0 2px 8px rgba(0,0,0,0.08)", transition: "box-shadow 0.3s ease" }}
     >
       <div className="p-4">
         <div className="flex justify-between items-start mb-3">
           <div>
-            <h3 className="font-semibold text-base" style={{ color: "rgba(26,18,8,1)" }}>
+            <h3 className="font-semibold text-base text-[#1a1208] dark:text-gray-100">
               {vuelo.aerolineaNombre || "Aerolínea"}
             </h3>
-            <p className="text-xs" style={{ color: "rgba(156,128,96,1)" }}>{vuelo.numeroVuelo || "Vuelo"}</p>
+            <p className="text-xs text-[#9c8060] dark:text-gray-400">{vuelo.numeroVuelo || "Vuelo"}</p>
           </div>
           <div className="text-right">
-            <p className="text-lg font-bold" style={{ color: "rgba(150,95,33,1)" }}>${vuelo.precio?.toFixed(2) || "0"}</p>
-            <p className="text-xs" style={{ color: "rgba(156,128,96,1)" }}>por persona</p>
+            <p className="text-lg font-bold text-[#965f21] dark:text-[#b8753b]">${vuelo.precio?.toFixed(2) || "0"}</p>
+            <p className="text-xs text-[#9c8060] dark:text-gray-400">por persona</p>
           </div>
         </div>
 
         <div className="text-center mb-3">
-          <p className="text-sm font-medium" style={{ color: "rgba(26,18,8,1)" }}>
+          <p className="text-sm font-medium text-[#1a1208] dark:text-gray-100">
             {origenCiudad} → {destinoCiudad}
           </p>
-          <p className="text-xs" style={{ color: "rgba(156,128,96,1)" }}>
+          <p className="text-xs text-[#9c8060] dark:text-gray-400">
             {origenCodigo} → {destinoCodigo}
           </p>
         </div>
 
         <div className="flex items-center justify-between mb-3">
           <div className="text-center flex-1">
-            <p className="font-bold text-lg">{formatHora(vuelo.fechaSalida)}</p>
+            <p className="font-bold text-lg text-[#1a1208] dark:text-gray-100">{formatHora(vuelo.fechaSalida)}</p>
           </div>
           <div className="flex-1 px-2">
             <div className="relative flex items-center justify-center">
-              <div className="border-t border-gray-300 w-full absolute"></div>
-              <span className="relative bg-white px-1">
+              <div className="border-t border-gray-300 dark:border-gray-600 w-full absolute"></div>
+              <span className="relative bg-white dark:bg-gray-800 px-1">
                 <PlaneIcon className="w-4 h-4" style={{ color: "rgba(150,95,33,0.6)" }} />
               </span>
             </div>
-            <p className="text-xs text-center text-gray-400 mt-1">
+            <p className="text-xs text-center text-gray-400 dark:text-gray-500 mt-1">
               {calcularDuracion(vuelo.fechaSalida, vuelo.fechaLlegada)}
             </p>
           </div>
           <div className="text-center flex-1">
-            <p className="font-bold text-lg">{formatHora(vuelo.fechaLlegada)}</p>
+            <p className="font-bold text-lg text-[#1a1208] dark:text-gray-100">{formatHora(vuelo.fechaLlegada)}</p>
           </div>
         </div>
 
         <div className="flex justify-between items-center text-xs mb-3">
-          <span style={{ color: "rgba(156,128,96,1)" }}>📅 {formatFecha(vuelo.fechaSalida)}</span>
+          <span className="text-[#9c8060] dark:text-gray-400">📅 {formatFecha(vuelo.fechaSalida)}</span>
           <span style={{ color: vuelo.plazasDisponibles > 10 ? "#4caf50" : "#ff9800", fontWeight: 500 }}>
             {vuelo.plazasDisponibles} plazas
           </span>
@@ -187,10 +176,7 @@ const VueloCard = ({ vuelo, onSelect, aeropuertoMap }) => {
 
         <button
           onClick={() => onSelect(vuelo)}
-          className="w-full py-2 rounded-lg text-sm font-medium transition-all duration-200"
-          style={{ background: "rgba(150,95,33,1)", color: "white", border: "none", cursor: "pointer" }}
-          onMouseEnter={(e) => (e.currentTarget.style.background = "rgba(110,68,18,1)")}
-          onMouseLeave={(e) => (e.currentTarget.style.background = "rgba(150,95,33,1)")}
+          className="w-full py-2 rounded-lg text-sm font-medium transition-all duration-200 bg-[#965f21] hover:bg-[#6e4412] dark:bg-[#b8753b] dark:hover:bg-[#965f21] text-white border-none cursor-pointer"
         >
           Seleccionar vuelo
         </button>
@@ -220,20 +206,6 @@ const HeroSection = ({ onSearch, aeropuertos, cargandoAeropuertos }) => {
     onSearch({ origen, destino, fecha });
   };
 
-  const inputBase = {
-    width: "100%",
-    paddingLeft: "2.25rem",
-    paddingRight: "0.75rem",
-    paddingTop: "0.75rem",
-    paddingBottom: "0.75rem",
-    borderRadius: "0.5rem",
-    fontSize: "0.875rem",
-    outline: "none",
-    border: "1px solid rgba(150,95,33,0.2)",
-    background: "#faf7f2",
-    transition: "border-color 0.2s",
-  };
-
   return (
     <div className="relative rounded-2xl overflow-hidden mb-12">
       <div className="absolute inset-0" style={{ backgroundImage: `url(${fondo})`, backgroundSize: "cover", backgroundPosition: "center" }} />
@@ -241,17 +213,17 @@ const HeroSection = ({ onSearch, aeropuertos, cargandoAeropuertos }) => {
 
       <div className="relative z-10 px-6 py-16 md:py-20 text-center">
         <motion.h1 initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}
-          className="text-3xl md:text-5xl font-bold mb-4"
-          style={{ fontFamily: "'Playfair Display', serif", color: "white" }}>
+          className="text-3xl md:text-5xl font-bold mb-4 text-white"
+          style={{ fontFamily: "'Playfair Display', serif" }}>
           Encuentra tu próximo vuelo
         </motion.h1>
         <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.1 }}
-          className="text-base md:text-lg mb-8" style={{ color: "rgba(255,249,242,0.9)" }}>
+          className="text-base md:text-lg mb-8 text-[rgba(255,249,242,0.9)]">
           Los mejores precios en vuelos con RumboLibre
         </motion.p>
 
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.2 }}
-          className="max-w-5xl mx-auto bg-white rounded-2xl p-4 shadow-xl">
+          className="max-w-5xl mx-auto bg-white dark:bg-gray-800 rounded-2xl p-4 shadow-xl transition-colors duration-300">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-3 items-end">
             <div>
               <AirportSelect placeholder="Origen" value={origen}
@@ -260,7 +232,8 @@ const HeroSection = ({ onSearch, aeropuertos, cargandoAeropuertos }) => {
             </div>
             <div className="flex justify-center items-center">
               <button onClick={intercambiar} title="Intercambiar"
-                style={{ background: "rgba(150,95,33,0.1)", transform: swapping ? "rotate(180deg)" : "rotate(0deg)", transition: "transform 0.4s ease, background 0.2s", border: "none", cursor: "pointer", padding: "0.5rem", borderRadius: "9999px" }}>
+                className="bg-[rgba(150,95,33,0.1)] dark:bg-gray-700 border-none cursor-pointer p-2 rounded-full transition-all duration-200"
+                style={{ transform: swapping ? "rotate(180deg)" : "rotate(0deg)" }}>
                 <SwapIcon />
               </button>
             </div>
@@ -269,19 +242,18 @@ const HeroSection = ({ onSearch, aeropuertos, cargandoAeropuertos }) => {
                 onChange={(val) => setDestino(val)}
                 aeropuertos={aeropuertos} disabled={cargandoAeropuertos} />
             </div>
-            <div style={{ position: "relative", display: "flex", alignItems: "center" }}>
-              <span style={{ position: "absolute", left: "0.75rem", zIndex: 10, pointerEvents: "none", color: "rgba(150,95,33,0.7)" }}>
+            <div className="relative flex items-center">
+              <span className="absolute left-3 z-10 pointer-events-none text-[rgba(150,95,33,0.7)] dark:text-gray-400">
                 <CalendarIcon />
               </span>
               <input type="date" value={fecha} min={today}
                 onChange={(e) => setFecha(e.target.value)}
-                style={inputBase} />
+                className="w-full pl-9 pr-3 py-3 text-sm rounded-lg outline-none border border-[rgba(150,95,33,0.2)] dark:border-gray-600 bg-[#faf7f2] dark:bg-gray-700 text-[#1a1208] dark:text-gray-100 transition-colors duration-200" />
             </div>
           </div>
 
           <button onClick={handleSearch}
-            className="w-full mt-3 py-3 rounded-xl text-sm font-medium flex items-center justify-center gap-2"
-            style={{ background: "rgba(150,95,33,1)", color: "white", border: "none", cursor: "pointer", transition: "background 0.2s" }}>
+            className="w-full mt-3 py-3 rounded-xl text-sm font-medium flex items-center justify-center gap-2 bg-[#965f21] hover:bg-[#6e4412] dark:bg-[#b8753b] dark:hover:bg-[#965f21] text-white border-none cursor-pointer transition-all duration-200">
             <SearchIcon /> Buscar vuelos
           </button>
         </motion.div>
@@ -336,7 +308,7 @@ export default function HomePage() {
       const url = `http://localhost:8080/api/vuelos/disponibles?${params.toString()}`;
       const res = await axios.get(url);
       setResultadosBusqueda(res.data);
-      
+
       if (res.data.length === 0) {
         if (origen || destino || fecha) {
           let mensaje = "No hay vuelos disponibles";
@@ -385,8 +357,7 @@ export default function HomePage() {
   return (
     <>
       <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
-      <div className="min-h-screen flex flex-col relative" style={{ fontFamily: "'DM Sans', sans-serif" }}>
-        <div className="fixed inset-0 -z-10" style={{ background: "#fff9f2" }} />
+      <div className="min-h-screen flex flex-col relative bg-[#fff9f2] dark:bg-gray-900 transition-colors duration-300" style={{ fontFamily: "'DM Sans', sans-serif" }}>
         <Header />
 
         <div className="flex-grow">
@@ -396,9 +367,8 @@ export default function HomePage() {
             <AnimatePresence>
               {buscando && (
                 <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="text-center py-12">
-                  <div className="inline-block animate-spin rounded-full h-8 w-8 border-4"
-                    style={{ borderColor: "rgba(150,95,33,0.2)", borderTopColor: "rgba(150,95,33,1)" }} />
-                  <p className="mt-3" style={{ color: "rgba(156,128,96,1)" }}>Buscando vuelos…</p>
+                  <div className="inline-block animate-spin rounded-full h-8 w-8 border-4 border-[rgba(150,95,33,0.2)] dark:border-gray-600 border-t-[#965f21] dark:border-t-[#b8753b]" />
+                  <p className="mt-3 text-[#9c8060] dark:text-gray-400">Buscando vuelos…</p>
                 </motion.div>
               )}
             </AnimatePresence>
@@ -406,9 +376,8 @@ export default function HomePage() {
             <AnimatePresence>
               {error && !buscando && (
                 <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}
-                  className="text-center py-6 px-4 rounded-xl mb-6"
-                  style={{ background: "#fff5f5", border: "1px solid #fecaca" }}>
-                  <p style={{ color: "#dc2626", fontWeight: 500 }}>{error}</p>
+                  className="text-center py-6 px-4 rounded-xl mb-6 bg-[#fff5f5] dark:bg-red-900/20 border border-[#fecaca] dark:border-red-800">
+                  <p className="text-[#dc2626] dark:text-red-400 font-medium">{error}</p>
                 </motion.div>
               )}
             </AnimatePresence>
@@ -416,21 +385,20 @@ export default function HomePage() {
             {!buscando && (
               <>
                 <div className="flex justify-between items-center mb-6">
-                  <h2 className="text-2xl font-bold" style={{ fontFamily: "'Playfair Display', serif", color: "rgba(26,18,8,1)" }}>
+                  <h2 className="text-2xl font-bold text-[#1a1208] dark:text-gray-100" style={{ fontFamily: "'Playfair Display', serif" }}>
                     {esBusqueda ? "Resultados de búsqueda" : "Vuelos disponibles"}
                   </h2>
                   {esBusqueda && (
-                    <button onClick={limpiarBusqueda} className="text-sm font-medium hover:opacity-70 transition-opacity"
-                      style={{ color: "rgba(150,95,33,1)", background: "none", border: "none", cursor: "pointer" }}>
+                    <button onClick={limpiarBusqueda} className="text-sm font-medium text-[#965f21] dark:text-[#b8753b] hover:opacity-70 transition-opacity bg-transparent border-none cursor-pointer">
                       ← Mostrar todos
                     </button>
                   )}
                 </div>
 
                 {resultadosBusqueda && resultadosBusqueda.length === 0 ? (
-                  <div className="text-center py-16 bg-white rounded-xl">
-                    <PlaneIcon className="w-16 h-16 mx-auto mb-4 opacity-20" />
-                    <p style={{ color: "rgba(156,128,96,1)" }}>No hay vuelos disponibles en este momento.</p>
+                  <div className="text-center py-16 bg-white dark:bg-gray-800 rounded-xl transition-colors duration-300">
+                    <PlaneIcon className="w-16 h-16 mx-auto mb-4 opacity-20 dark:opacity-10" />
+                    <p className="text-[#9c8060] dark:text-gray-400">No hay vuelos disponibles en este momento.</p>
                   </div>
                 ) : resultadosBusqueda && resultadosBusqueda.length > 0 ? (
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -456,8 +424,8 @@ export default function HomePage() {
                   <motion.div key={i} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.3 + i * 0.1 }} className="text-center p-4">
                     <div className="text-3xl mb-2">{item.icon}</div>
-                    <h3 className="font-semibold text-sm mb-1" style={{ color: "rgba(26,18,8,1)" }}>{item.title}</h3>
-                    <p className="text-xs" style={{ color: "rgba(156,128,96,1)" }}>{item.desc}</p>
+                    <h3 className="font-semibold text-sm mb-1 text-[#1a1208] dark:text-gray-100">{item.title}</h3>
+                    <p className="text-xs text-[#9c8060] dark:text-gray-400">{item.desc}</p>
                   </motion.div>
                 ))}
               </div>

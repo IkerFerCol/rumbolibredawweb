@@ -297,7 +297,6 @@ const RegisterForm = ({ onToast }) => {
     }));
 
   const handleSubmit = async () => {
-    // Validación de campos requeridos
     if (!form.name || !form.name.trim()) {
       onToast("Por favor ingresa tu nombre");
       return;
@@ -313,7 +312,6 @@ const RegisterForm = ({ onToast }) => {
       return;
     }
 
-    // Validación básica de email
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(form.email)) {
       onToast("Por favor ingresa un correo electrónico válido");
@@ -338,18 +336,9 @@ const RegisterForm = ({ onToast }) => {
     setIsLoading(true);
 
     try {
-      // Temporalmente remover el token para el registro
-      const token = localStorage.getItem("token");
-      const originalAuth = api.defaults.headers.common["Authorization"];
-      if (token) {
-        delete api.defaults.headers.common["Authorization"];
-      }
-
-      // Enviar datos con los nombres de campos que espera el backend
-      // Según el error: espera "nombre" y "apellidos" (en plural)
       const userData = {
         nombre: form.name.trim(),
-        apellidos: form.lastname.trim(),  // Nota: "apellidos" en plural
+        apellidos: form.lastname.trim(),
         email: form.email.trim().toLowerCase(),
         telefono: form.phone?.trim() || "",
         password: form.password,
@@ -357,56 +346,32 @@ const RegisterForm = ({ onToast }) => {
 
       console.log("Enviando datos de registro:", userData);
 
-      const response = await api.post("/usuarios/register", userData);
-
-      console.log("Respuesta exitosa:", response.data);
-
-      // Restaurar el token
-      if (token) {
-        api.defaults.headers.common["Authorization"] = originalAuth;
-      }
+      // ✅ CAMBIADO: /auth/register → /usuarios/register
+      await api.post("/usuarios/register", userData);
 
       onToast("¡Cuenta creada con éxito! Por favor inicia sesión ✈");
 
-      // Redirigir al login después de 1.5 segundos
       setTimeout(() => {
         window.location.href = "/login";
       }, 1500);
 
     } catch (error) {
-      // Restaurar el token
-      const token = localStorage.getItem("token");
-      if (token) {
-        const originalAuth = api.defaults.headers.common["Authorization"];
-        if (originalAuth !== `Bearer ${token}`) {
-          api.defaults.headers.common["Authorization"] = `Bearer ${token}`;
-        }
-      }
-
       console.error("Error en registro:", error);
 
-      // Mostrar detalles específicos del error
       if (error.response?.data) {
-        console.error("Datos del error:", error.response.data);
-
         const errorData = error.response.data;
 
         if (errorData.errores) {
-          // Mostrar el primer error de validación
           const primerError = Object.values(errorData.errores)[0];
           onToast(primerError || "Error de validación en los datos");
-        }
-        else if (errorData.mensaje) {
+        } else if (errorData.mensaje) {
           onToast(errorData.mensaje);
-        }
-        else {
+        } else {
           onToast("Error al crear la cuenta. Verifica los datos ingresados");
         }
       } else if (error.request) {
-        console.error("No se recibió respuesta:", error.request);
         onToast("No se pudo conectar con el servidor");
       } else {
-        console.error("Error al configurar la petición:", error.message);
         onToast("Error al crear la cuenta. Intenta nuevamente");
       }
     } finally {
@@ -416,7 +381,6 @@ const RegisterForm = ({ onToast }) => {
 
   return (
     <div className="flex flex-col gap-0">
-      {/* Encabezado */}
       <h2
         className="text-[19px] font-medium mb-1 animate-fadeInUp delay-100 opacity-0"
         style={{ fontFamily: "'Playfair Display', serif", color: "rgba(26, 18, 8, 1)" }}
@@ -430,9 +394,7 @@ const RegisterForm = ({ onToast }) => {
         Crea tu cuenta y empieza a volar
       </p>
 
-      {/* Campos */}
       <div className="flex flex-col gap-4 mb-4">
-        {/* Nombre y Apellido */}
         <div className="flex gap-2.5">
           <div className="flex-1">
             <InputField
@@ -475,7 +437,6 @@ const RegisterForm = ({ onToast }) => {
           icon={<PhoneIcon />}
         />
 
-        {/* Contraseña con indicador de fortaleza */}
         <div className="flex flex-col gap-0">
           <InputField
             label="Contraseña"
@@ -499,7 +460,6 @@ const RegisterForm = ({ onToast }) => {
         </div>
       </div>
 
-      {/* Términos y condiciones */}
       <label className="flex items-start gap-2.5 cursor-pointer mb-1">
         <input
           type="checkbox"
@@ -530,7 +490,6 @@ const RegisterForm = ({ onToast }) => {
         </span>
       </label>
 
-      {/* Botón principal */}
       <button
         onClick={handleSubmit}
         disabled={isLoading}
@@ -555,7 +514,6 @@ const RegisterForm = ({ onToast }) => {
         {isLoading ? "Creando cuenta..." : "Crear mi cuenta"}
       </button>
 
-      {/* Divisor */}
       <div className="flex items-center gap-3 my-5">
         <div className="flex-1 h-px" style={{ background: "rgba(150, 95, 33, 0.18)" }} />
         <span
@@ -567,7 +525,6 @@ const RegisterForm = ({ onToast }) => {
         <div className="flex-1 h-px" style={{ background: "rgba(150, 95, 33, 0.18)" }} />
       </div>
 
-      {/* Botones sociales */}
       <div className="flex gap-2.5">
         <SocialButton
           icon={<GoogleIcon />}
@@ -584,7 +541,7 @@ const RegisterForm = ({ onToast }) => {
   );
 };
 
-// ─── Componente principal: RegisterPage (CON ANIMACIONES) ────────────
+// ─── Componente principal: RegisterPage ──────────────────────────────────────
 export default function RegisterPage() {
   const [toast, setToast] = useState({ message: "", visible: false });
 
@@ -596,21 +553,18 @@ export default function RegisterPage() {
   return (
     <>
       <style>{animationStyles}</style>
-      
-      {/* Fuentes de Google */}
+
       <link
         href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600&family=DM+Sans:wght@300;400;500&display=swap"
         rel="stylesheet"
       />
 
-      {/* Contenedor principal con flex column y min-h-screen */}
       <div
         className="min-h-screen flex flex-col relative"
         style={{
           fontFamily: "'DM Sans', sans-serif"
         }}
       >
-        {/* Fondo imagen */}
         <div
           className="fixed inset-0 -z-10 animate-fadeIn"
           style={{
@@ -620,7 +574,6 @@ export default function RegisterPage() {
           }}
         />
 
-        {/* Overlay elegante */}
         <div
           className="fixed inset-0 -z-10 animate-fadeIn"
           style={{
@@ -628,26 +581,23 @@ export default function RegisterPage() {
           }}
         />
 
-        {/* Toast */}
         <Toast message={toast.message} visible={toast.visible} />
 
-        {/* Contenido principal - flex-grow para empujar el footer hacia abajo */}
         <div className="flex-grow flex flex-col items-center justify-center pt-10 pb-8 px-4">
-          {/* Marca */}
           <div className="flex flex-col items-center gap-1.5 -mt-16 mb-8 relative z-10 animate-fadeInUp">
             <img
               src={logo}
               alt="RumboLibre"
               className="w-32 h-32 object-cover animate-scaleIn"
             />
-          
-            <span 
+
+            <span
               className="text-[22px] font-semibold tracking-wide animate-fadeInUp delay-100 opacity-0"
               style={{ fontFamily: "'Playfair Display', serif", color: "rgba(255, 249, 242, 1)" }}
             >
               RumboLibre
             </span>
-            <span 
+            <span
               className="text-[11px] uppercase tracking-[0.14em] font-light animate-fadeInUp delay-200 opacity-0"
               style={{ color: "rgba(220, 200, 170, 1)" }}
             >
@@ -655,7 +605,6 @@ export default function RegisterPage() {
             </span>
           </div>
 
-          {/* Tarjeta */}
           <div
             className="w-full max-w-[420px] rounded-[20px] p-8 relative z-10 animate-fadeInUp delay-300 opacity-0"
             style={{
@@ -664,7 +613,6 @@ export default function RegisterPage() {
               boxShadow: "0 2px 32px rgba(150,95,33,0.07)",
             }}
           >
-            {/* Título del registro */}
             <div className="mb-2">
               <h1
                 className="text-[24px] font-medium text-center"
@@ -674,10 +622,8 @@ export default function RegisterPage() {
               </h1>
             </div>
 
-            {/* Formulario de registro */}
             <RegisterForm onToast={showToast} />
 
-            {/* Enlace para volver al login */}
             <div className="mt-6 text-center">
               <span
                 className="text-[12px]"
@@ -696,7 +642,6 @@ export default function RegisterPage() {
           </div>
         </div>
 
-        {/* Footer - siempre al final */}
         <Footer />
       </div>
     </>

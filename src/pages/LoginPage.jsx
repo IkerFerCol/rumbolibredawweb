@@ -1,8 +1,9 @@
 import { useState } from "react";
 import fondo from "../assets/fondoavionloginregister.jpg";
 import Footer from "../components/Footer";
-import api from "../services/api";
 import logo from "../assets/logorumbolibre.png";
+import { useAuth } from "../context/AuthContext";
+
 
 // ─── Estilos de animación ─────────────────────────────────────────────────────
 const animationStyles = `
@@ -229,6 +230,8 @@ const LoginForm = ({ onToast }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPass, setShowPass] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const { login } = useAuth();
 
   const handleSubmit = async () => {
     if (!email || !password) {
@@ -236,21 +239,20 @@ const LoginForm = ({ onToast }) => {
       return;
     }
 
-    try {
-      const res = await api.post("/usuarios/login", {
-        email,
-        password,
-      });
+    setIsLoading(true);
 
-      const token = res.data.token;
-      localStorage.setItem("token", token);
+    const result = await login(email, password);
+
+    if (result.success) {
       onToast("Login correcto ✈");
-      console.log("TOKEN:", token);
-
-    } catch (error) {
-      console.error(error);
-      onToast("Credenciales incorrectas");
+      setTimeout(() => {
+        window.location.href = "/";
+      }, 1000);
+    } else {
+      onToast(result.message || "Credenciales incorrectas");
     }
+
+    setIsLoading(false);
   };
 
   return (
@@ -310,17 +312,26 @@ const LoginForm = ({ onToast }) => {
 
       <button
         onClick={handleSubmit}
-        className="w-full h-12 mt-4 flex items-center justify-center gap-2 rounded-xl text-[15px] font-medium transition-all duration-200 active:scale-[0.99]"
+        disabled={isLoading}
+        className="w-full h-12 mt-4 flex items-center justify-center gap-2 rounded-xl text-[15px] font-medium transition-all duration-200 active:scale-[0.99] disabled:opacity-50 disabled:cursor-not-allowed"
         style={{
           background: "rgba(150, 95, 33, 1)",
           color: "rgba(255, 249, 242, 1)",
           fontFamily: "'DM Sans', sans-serif",
         }}
-        onMouseEnter={(e) => (e.currentTarget.style.background = "rgba(110, 68, 18, 1)")}
-        onMouseLeave={(e) => (e.currentTarget.style.background = "rgba(150, 95, 33, 1)")}
+        onMouseEnter={(e) => {
+          if (!isLoading) e.currentTarget.style.background = "rgba(110, 68, 18, 1)";
+        }}
+        onMouseLeave={(e) => {
+          if (!isLoading) e.currentTarget.style.background = "rgba(150, 95, 33, 1)";
+        }}
       >
-        <PlaneIcon className="w-4 h-4" />
-        Entrar a mi cuenta
+        {isLoading ? (
+          <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+        ) : (
+          <PlaneIcon className="w-4 h-4" />
+        )}
+        {isLoading ? "Iniciando sesión..." : "Entrar a mi cuenta"}
       </button>
 
       <div className="flex items-center gap-3 my-5">
@@ -379,7 +390,6 @@ export default function LoginPage() {
     <>
       <style>{animationStyles}</style>
       
-      {/* Fuentes de Google */}
       <link
         href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600&family=DM+Sans:wght@300;400;500&display=swap"
         rel="stylesheet"
@@ -391,7 +401,6 @@ export default function LoginPage() {
           fontFamily: "'DM Sans', sans-serif"
         }}
       >
-        {/* Fondo imagen - fixed */}
         <div
           className="fixed inset-0 -z-10 animate-fadeIn"
           style={{
@@ -401,7 +410,6 @@ export default function LoginPage() {
           }}
         />
 
-        {/* Overlay elegante - fixed */}
         <div
           className="fixed inset-0 -z-10 animate-fadeIn"
           style={{
@@ -409,12 +417,9 @@ export default function LoginPage() {
           }}
         />
 
-        {/* Toast */}
         <Toast message={toast.message} visible={toast.visible} />
 
-        {/* Contenido principal - flex-grow */}
         <div className="flex-grow flex flex-col items-center justify-center pt-10 pb-8 px-4">
-          {/* Marca */}
           <div className="flex flex-col items-center gap-1.5 -mt-16 mb-8 relative z-10 animate-fadeInUp">
             <img
               src={logo}
@@ -436,7 +441,6 @@ export default function LoginPage() {
             </span>
           </div>
 
-          {/* Tarjeta */}
           <div
             className="w-full max-w-[420px] rounded-[20px] p-8 relative z-10 animate-fadeInUp delay-300 opacity-0"
             style={{
@@ -458,7 +462,6 @@ export default function LoginPage() {
           </div>
         </div>
 
-        {/* Footer */}
         <Footer />
       </div>
     </>
