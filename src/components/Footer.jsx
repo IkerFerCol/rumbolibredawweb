@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
 export default function Footer() {
     return (
@@ -9,10 +10,25 @@ export default function Footer() {
             <p className="text-sm">
                 &copy; {new Date().getFullYear()} RumboLibre. Todos los derechos reservados.
             </p>
+
             <p className="text-xs mt-1 text-[rgba(255,249,242,0.8)] dark:text-gray-400">
-                <span className="underline cursor-pointer hover:text-white dark:hover:text-gray-200 transition-colors">Términos y condiciones</span>{" "}
-                |{" "}
-                <span className="underline cursor-pointer hover:text-white dark:hover:text-gray-200 transition-colors">Política de privacidad</span>
+                
+                <Link
+                    to="/terminos-condiciones"
+                    className="underline cursor-pointer hover:text-white dark:hover:text-gray-200 transition-colors"
+                >
+                    Términos y condiciones
+                </Link>
+
+                {" "} | {" "}
+
+                <Link
+                    to="/politica-privacidad"
+                    className="underline cursor-pointer hover:text-white dark:hover:text-gray-200 transition-colors"
+                >
+                    Política de privacidad
+                </Link>
+
             </p>
         </footer>
     );

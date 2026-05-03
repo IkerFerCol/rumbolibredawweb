@@ -1,5 +1,5 @@
 import { useState } from "react";
-import Navbar from "../components/Header";
+import Header from "../components/Header";
 import Footer from "../components/Footer";
 import emailjs from "@emailjs/browser";
 
@@ -9,9 +9,6 @@ const animationStyles = `
     to   { opacity: 1; transform: translateY(0); }
   }
   .animate-fadeInUp { animation: fadeInUp 0.5s ease-out forwards; }
-  .delay-100 { animation-delay: 0.1s; }
-  .delay-200 { animation-delay: 0.2s; }
-  .delay-300 { animation-delay: 0.3s; }
   .opacity-0 { opacity: 0; }
 `;
 
@@ -26,22 +23,12 @@ const SUBJECTS = [
 
 const InputField = ({ label, children }) => (
   <div className="flex flex-col gap-1.5">
-    <label
-      className="text-[11px] font-medium uppercase tracking-widest"
-      style={{ color: "rgba(92, 74, 42, 1)" }}
-    >
+    <label className="text-[11px] font-medium uppercase tracking-widest text-[#5c4a2a] dark:text-gray-300">
       {label}
     </label>
     {children}
   </div>
 );
-
-const inputStyle = {
-  background: "rgba(250, 247, 242, 1)",
-  border: "0.5px solid rgba(150, 95, 33, 0.25)",
-  color: "rgba(26, 18, 8, 1)",
-  fontFamily: "'DM Sans', sans-serif",
-};
 
 export default function ContactoPage() {
   const user = localStorage.getItem("rl_user")
@@ -49,14 +36,14 @@ export default function ContactoPage() {
     : null;
 
   const [form, setForm] = useState({
-    name:    user?.name  || "",
-    email:   user?.email || "",
+    name: user?.name || "",
+    email: user?.email || "",
     subject: SUBJECTS[0],
     message: "",
   });
-  const [loading,  setLoading]  = useState(false);
-  const [sent,     setSent]     = useState(false);
-  const [error,    setError]    = useState("");
+  const [loading, setLoading] = useState(false);
+  const [sent, setSent] = useState(false);
+  const [error, setError] = useState("");
 
   function handleChange(field, value) {
     setForm((p) => ({ ...p, [field]: value }));
@@ -74,16 +61,16 @@ export default function ContactoPage() {
     try {
       // EmailJS — reemplaza con tus IDs reales
       await emailjs.send(
-        "YOUR_SERVICE_ID",   // Service ID de EmailJS
-        "YOUR_TEMPLATE_ID",  // Template ID de EmailJS
+        "YOUR_SERVICE_ID", // Service ID de EmailJS
+        "YOUR_TEMPLATE_ID", // Template ID de EmailJS
         {
-          from_name:    form.name,
-          from_email:   form.email,
-          subject:      form.subject,
-          message:      form.message,
-          to_email:     "ikerfc09@gmail.com",
+          from_name: form.name,
+          from_email: form.email,
+          subject: form.subject,
+          message: form.message,
+          to_email: "ikerfc09@gmail.com",
         },
-        "YOUR_PUBLIC_KEY"    // Public Key de EmailJS
+        "YOUR_PUBLIC_KEY" // Public Key de EmailJS
       );
       setSent(true);
     } catch (err) {
@@ -98,33 +85,34 @@ export default function ContactoPage() {
     <>
       <style>{animationStyles}</style>
       <link
-        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600&family=DM+Sans:wght@300;400;500&display=swap"
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=DM+Sans:wght@300;400;500;600&display=swap"
         rel="stylesheet"
       />
 
       <div
-        className="min-h-screen flex flex-col"
-        style={{ background: "rgba(250, 247, 242, 1)", fontFamily: "'DM Sans', sans-serif" }}
+        className="min-h-screen flex flex-col bg-[#fff9f2] dark:bg-gray-900 transition-colors duration-300"
+        style={{ fontFamily: "'DM Sans', sans-serif" }}
       >
-        <Navbar />
+        <Header />
 
         {/* Hero */}
         <div
-          className="py-12 px-6 text-center"
+          className="py-12 px-6 text-center transition-colors duration-300"
           style={{
-            background: "linear-gradient(135deg, rgba(150,95,33,0.1) 0%, rgba(200,160,100,0.06) 100%)",
+            background:
+              "linear-gradient(135deg, rgba(150,95,33,0.1) 0%, rgba(200,160,100,0.06) 100%)",
             borderBottom: "0.5px solid rgba(150, 95, 33, 0.12)",
           }}
         >
           <h1
-            className="text-[32px] font-semibold mb-2 animate-fadeInUp opacity-0"
-            style={{ fontFamily: "'Playfair Display', serif", color: "rgba(26, 18, 8, 1)" }}
+            className="text-[32px] font-semibold mb-2 animate-fadeInUp opacity-0 text-[#1a1208] dark:text-gray-100"
+            style={{ fontFamily: "'Playfair Display', serif" }}
           >
             Contacto
           </h1>
           <p
-            className="text-[14px] font-light animate-fadeInUp delay-100 opacity-0"
-            style={{ color: "rgba(156, 128, 96, 1)" }}
+            className="text-[14px] font-light animate-fadeInUp opacity-0 text-[#9c8060] dark:text-gray-400"
+            style={{ animationDelay: "100ms" }}
           >
             ¿Tienes alguna duda o problema? Estamos aquí para ayudarte
           </p>
@@ -132,9 +120,11 @@ export default function ContactoPage() {
 
         <div className="flex-grow flex items-start justify-center px-4 py-12">
           <div className="w-full max-w-2xl">
-
             {/* Info cards */}
-            <div className="grid grid-cols-3 gap-4 mb-8 animate-fadeInUp delay-100 opacity-0">
+            <div
+              className="grid grid-cols-3 gap-4 mb-8 animate-fadeInUp opacity-0"
+              style={{ animationDelay: "100ms" }}
+            >
               {[
                 { icon: "📧", label: "Email", val: "ikerfc09@gmail.com" },
                 { icon: "📞", label: "Teléfono", val: "+34 900 123 456" },
@@ -142,21 +132,17 @@ export default function ContactoPage() {
               ].map((item) => (
                 <div
                   key={item.label}
-                  className="rounded-xl p-4 text-center"
+                  className="rounded-xl p-4 text-center bg-white dark:bg-gray-800 transition-colors duration-300"
                   style={{
-                    background: "rgba(255, 249, 242, 1)",
                     border: "0.5px solid rgba(150, 95, 33, 0.18)",
                     boxShadow: "0 2px 12px rgba(150, 95, 33, 0.06)",
                   }}
                 >
                   <div className="text-2xl mb-1.5">{item.icon}</div>
-                  <p
-                    className="text-[10px] uppercase tracking-widest mb-0.5"
-                    style={{ color: "rgba(156, 128, 96, 1)" }}
-                  >
+                  <p className="text-[10px] uppercase tracking-widest mb-0.5 text-[#9c8060] dark:text-gray-400">
                     {item.label}
                   </p>
-                  <p className="text-[12px] font-semibold" style={{ color: "rgba(92, 74, 42, 1)" }}>
+                  <p className="text-[12px] font-semibold text-[#5c4a2a] dark:text-gray-300">
                     {item.val}
                   </p>
                 </div>
@@ -166,27 +152,35 @@ export default function ContactoPage() {
             {/* Formulario o confirmación */}
             {sent ? (
               <div
-                className="rounded-2xl p-10 text-center animate-fadeInUp opacity-0"
+                className="rounded-2xl p-10 text-center animate-fadeInUp opacity-0 bg-white dark:bg-gray-800 transition-colors duration-300"
                 style={{
-                  background: "rgba(255, 249, 242, 1)",
                   border: "0.5px solid rgba(150, 95, 33, 0.18)",
                   boxShadow: "0 4px 24px rgba(150, 95, 33, 0.08)",
                 }}
               >
                 <span className="text-5xl block mb-4">✉️</span>
                 <h3
-                  className="text-[22px] font-semibold mb-2"
-                  style={{ fontFamily: "'Playfair Display', serif", color: "rgba(26, 18, 8, 1)" }}
+                  className="text-[22px] font-semibold mb-2 text-[#1a1208] dark:text-gray-100"
+                  style={{ fontFamily: "'Playfair Display', serif" }}
                 >
                   ¡Mensaje enviado!
                 </h3>
-                <p className="text-[14px] mb-6" style={{ color: "rgba(156, 128, 96, 1)" }}>
+                <p className="text-[14px] mb-6 text-[#9c8060] dark:text-gray-400">
                   Hemos recibido tu consulta y te responderemos en menos de 24h.
                 </p>
                 <button
-                  onClick={() => { setSent(false); setForm({ ...form, message: "" }); }}
-                  className="px-6 py-2.5 rounded-xl text-[13px] font-medium"
-                  style={{ background: "rgba(150, 95, 33, 1)", color: "rgba(255, 249, 242, 1)" }}
+                  onClick={() => {
+                    setSent(false);
+                    setForm({ ...form, message: "" });
+                  }}
+                  className="px-6 py-2.5 rounded-xl text-[13px] font-medium text-white transition-all"
+                  style={{ background: "rgba(150, 95, 33, 1)" }}
+                  onMouseEnter={(e) =>
+                    (e.currentTarget.style.background = "rgba(110, 68, 18, 1)")
+                  }
+                  onMouseLeave={(e) =>
+                    (e.currentTarget.style.background = "rgba(150, 95, 33, 1)")
+                  }
                 >
                   Enviar otro mensaje
                 </button>
@@ -194,9 +188,9 @@ export default function ContactoPage() {
             ) : (
               <form
                 onSubmit={handleSubmit}
-                className="rounded-2xl p-8 animate-fadeInUp delay-200 opacity-0"
+                className="rounded-2xl p-8 animate-fadeInUp opacity-0 bg-white dark:bg-gray-800 transition-colors duration-300"
                 style={{
-                  background: "rgba(255, 249, 242, 1)",
+                  animationDelay: "200ms",
                   border: "0.5px solid rgba(150, 95, 33, 0.18)",
                   boxShadow: "0 4px 24px rgba(150, 95, 33, 0.08)",
                 }}
@@ -208,16 +202,7 @@ export default function ContactoPage() {
                       value={form.name}
                       onChange={(e) => handleChange("name", e.target.value)}
                       placeholder="Tu nombre"
-                      className="h-11 px-4 rounded-xl text-[14px] outline-none transition-all"
-                      style={inputStyle}
-                      onFocus={(e) => {
-                        e.target.style.borderColor = "rgba(150, 95, 33, 1)";
-                        e.target.style.boxShadow = "0 0 0 3px rgba(150, 95, 33, 0.1)";
-                      }}
-                      onBlur={(e) => {
-                        e.target.style.borderColor = "rgba(150, 95, 33, 0.25)";
-                        e.target.style.boxShadow = "none";
-                      }}
+                      className="h-11 px-4 rounded-xl text-[14px] outline-none transition-all bg-[#faf7f2] dark:bg-gray-700 text-[#1a1208] dark:text-gray-100 border border-[rgba(150,95,33,0.25)] dark:border-gray-600 placeholder:text-[#9c8060] dark:placeholder:text-gray-500 focus:border-[rgba(150,95,33,1)] focus:shadow-[0_0_0_3px_rgba(150,95,33,0.1)]"
                     />
                   </InputField>
                   <InputField label="Email *">
@@ -226,16 +211,7 @@ export default function ContactoPage() {
                       value={form.email}
                       onChange={(e) => handleChange("email", e.target.value)}
                       placeholder="tu@email.com"
-                      className="h-11 px-4 rounded-xl text-[14px] outline-none transition-all"
-                      style={inputStyle}
-                      onFocus={(e) => {
-                        e.target.style.borderColor = "rgba(150, 95, 33, 1)";
-                        e.target.style.boxShadow = "0 0 0 3px rgba(150, 95, 33, 0.1)";
-                      }}
-                      onBlur={(e) => {
-                        e.target.style.borderColor = "rgba(150, 95, 33, 0.25)";
-                        e.target.style.boxShadow = "none";
-                      }}
+                      className="h-11 px-4 rounded-xl text-[14px] outline-none transition-all bg-[#faf7f2] dark:bg-gray-700 text-[#1a1208] dark:text-gray-100 border border-[rgba(150,95,33,0.25)] dark:border-gray-600 placeholder:text-[#9c8060] dark:placeholder:text-gray-500 focus:border-[rgba(150,95,33,1)] focus:shadow-[0_0_0_3px_rgba(150,95,33,0.1)]"
                     />
                   </InputField>
                 </div>
@@ -244,13 +220,12 @@ export default function ContactoPage() {
                   <select
                     value={form.subject}
                     onChange={(e) => handleChange("subject", e.target.value)}
-                    className="h-11 px-4 rounded-xl text-[14px] outline-none transition-all cursor-pointer"
-                    style={inputStyle}
-                    onFocus={(e) => (e.target.style.borderColor = "rgba(150, 95, 33, 1)")}
-                    onBlur={(e) => (e.target.style.borderColor = "rgba(150, 95, 33, 0.25)")}
+                    className="h-11 px-4 rounded-xl text-[14px] outline-none transition-all cursor-pointer bg-[#faf7f2] dark:bg-gray-700 text-[#1a1208] dark:text-gray-100 border border-[rgba(150,95,33,0.25)] dark:border-gray-600 focus:border-[rgba(150,95,33,1)]"
                   >
                     {SUBJECTS.map((s) => (
-                      <option key={s} value={s}>{s}</option>
+                      <option key={s} value={s}>
+                        {s}
+                      </option>
                     ))}
                   </select>
                 </InputField>
@@ -262,25 +237,13 @@ export default function ContactoPage() {
                       onChange={(e) => handleChange("message", e.target.value)}
                       placeholder="Describe tu consulta con el mayor detalle posible..."
                       rows={5}
-                      className="px-4 py-3 rounded-xl text-[14px] outline-none transition-all resize-none"
-                      style={inputStyle}
-                      onFocus={(e) => {
-                        e.target.style.borderColor = "rgba(150, 95, 33, 1)";
-                        e.target.style.boxShadow = "0 0 0 3px rgba(150, 95, 33, 0.1)";
-                      }}
-                      onBlur={(e) => {
-                        e.target.style.borderColor = "rgba(150, 95, 33, 0.25)";
-                        e.target.style.boxShadow = "none";
-                      }}
+                      className="px-4 py-3 rounded-xl text-[14px] outline-none transition-all resize-none bg-[#faf7f2] dark:bg-gray-700 text-[#1a1208] dark:text-gray-100 border border-[rgba(150,95,33,0.25)] dark:border-gray-600 placeholder:text-[#9c8060] dark:placeholder:text-gray-500 focus:border-[rgba(150,95,33,1)] focus:shadow-[0_0_0_3px_rgba(150,95,33,0.1)]"
                     />
                   </InputField>
                 </div>
 
                 {error && (
-                  <p
-                    className="text-[12px] mt-3"
-                    style={{ color: "rgba(180, 50, 50, 1)" }}
-                  >
+                  <p className="text-[12px] mt-3 text-[#b43232]">
                     ⚠️ {error}
                   </p>
                 )}
@@ -288,23 +251,41 @@ export default function ContactoPage() {
                 <button
                   type="submit"
                   disabled={loading}
-                  className="w-full h-12 mt-5 flex items-center justify-center gap-2 rounded-xl text-[15px] font-medium transition-all duration-200 active:scale-[0.99]"
+                  className="w-full h-12 mt-5 flex items-center justify-center gap-2 rounded-xl text-[15px] font-medium transition-all duration-200 active:scale-[0.99] text-white"
                   style={{
-                    background: loading ? "rgba(150, 95, 33, 0.5)" : "rgba(150, 95, 33, 1)",
-                    color: "rgba(255, 249, 242, 1)",
+                    background: loading
+                      ? "rgba(150, 95, 33, 0.5)"
+                      : "rgba(150, 95, 33, 1)",
                   }}
                   onMouseEnter={(e) =>
-                    !loading && (e.currentTarget.style.background = "rgba(110, 68, 18, 1)")
+                    !loading &&
+                    (e.currentTarget.style.background = "rgba(110, 68, 18, 1)")
                   }
                   onMouseLeave={(e) =>
-                    !loading && (e.currentTarget.style.background = "rgba(150, 95, 33, 1)")
+                    !loading &&
+                    (e.currentTarget.style.background = "rgba(150, 95, 33, 1)")
                   }
                 >
                   {loading ? (
                     <>
-                      <svg className="animate-spin w-4 h-4" viewBox="0 0 24 24" fill="none">
-                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/>
-                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"/>
+                      <svg
+                        className="animate-spin w-4 h-4"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                      >
+                        <circle
+                          className="opacity-25"
+                          cx="12"
+                          cy="12"
+                          r="10"
+                          stroke="currentColor"
+                          strokeWidth="4"
+                        />
+                        <path
+                          className="opacity-75"
+                          fill="currentColor"
+                          d="M4 12a8 8 0 018-8v8z"
+                        />
                       </svg>
                       Enviando...
                     </>

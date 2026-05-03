@@ -11,6 +11,8 @@ import Foro from "./pages/ForoPage";
 import Reservas from "./pages/ReservasPage";
 import Contacto from "./pages/ContactoPage";
 import Config from "./pages/ConfigPage";
+import TerminosCondiciones from "./pages/TerminosCondiciones";
+import PoliticaPrivacidad from "./pages/PoliticaPrivacidad";
 
 
 export default function App() {
@@ -60,6 +62,17 @@ export default function App() {
             <Route path="/configuracion" element={
               <ProtectedRoute>
                 <Config />
+              </ProtectedRoute>
+            } />
+            <Route path="/terminos-condiciones" element={
+              <ProtectedRoute>
+                <TerminosCondiciones />
+              </ProtectedRoute>
+            } />
+
+            <Route path="/politica-privacidad" element={
+              <ProtectedRoute>
+                <PoliticaPrivacidad />
               </ProtectedRoute>
             } />
 
