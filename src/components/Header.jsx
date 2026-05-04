@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
+import { useSettings } from "../context/SettingsContext"; // ← Añadir esta línea
 import logo from "../assets/logorumbolibre.png";
 
 const animationStyles = `
@@ -11,10 +12,10 @@ const animationStyles = `
 `;
 
 const NAV_LINKS = [
-  { label: "Inicio",    path: "/" },
-  { label: "Ciudades",  path: "/ciudades" },
-  { label: "Foro",      path: "/foro" },
-  { label: "Reservas",  path: "/reservas" },
+  { label: "Inicio",    path: "/",             key: "nav_home" },
+  { label: "Ciudades",  path: "/ciudades",     key: "nav_cities" },
+  { label: "Foro",      path: "/foro",         key: "nav_forum" },
+  { label: "Reservas",  path: "/reservas",     key: "nav_bookings" },
 ];
 
 export default function Navbar() {
@@ -22,6 +23,9 @@ export default function Navbar() {
   const location  = useLocation();
   const [open, setOpen] = useState(false);
   const ref = useRef(null);
+
+  // ─── Obtener traducciones ─────────────────────────────────────────────────
+  const { t } = useSettings(); // ← Añadir esta línea
 
   const raw  = localStorage.getItem("token");
   const user = localStorage.getItem("rl_user")
@@ -88,9 +92,15 @@ export default function Navbar() {
               onClick={() => navigate(l.path)}
               className="px-4 py-2 rounded-xl text-[13px] font-medium transition-all duration-200 border border-transparent"
               style={{
-                color: isActive(l.path) ? "rgba(150, 95, 33, 1)" : "rgba(92, 74, 42, 0.75)",
-                background: isActive(l.path) ? "rgba(150, 95, 33, 0.1)" : "transparent",
-                borderColor: isActive(l.path) ? "rgba(150, 95, 33, 0.3)" : "transparent",
+                color: isActive(l.path)
+                  ? "rgba(150, 95, 33, 1)"
+                  : "rgba(92, 74, 42, 0.75)",
+                background: isActive(l.path)
+                  ? "rgba(150, 95, 33, 0.1)"
+                  : "transparent",
+                borderColor: isActive(l.path)
+                  ? "rgba(150, 95, 33, 0.3)"
+                  : "transparent",
               }}
               onMouseEnter={(e) => {
                 if (!isActive(l.path)) {
@@ -105,7 +115,8 @@ export default function Navbar() {
                 }
               }}
             >
-              {l.label}
+              {/* Usar traducción si existe la clave, si no usar el label por defecto */}
+              {t[l.key] || l.label}
             </button>
           ))}
         </div>
@@ -118,13 +129,13 @@ export default function Navbar() {
                 onClick={() => navigate("/login")}
                 className="px-4 py-2 rounded-xl text-[13px] font-medium transition-all duration-200 border border-[rgba(150,95,33,0.4)] dark:border-[#b8753b] text-[#965f21] dark:text-[#b8753b] bg-transparent hover:bg-[rgba(150,95,33,0.07)] dark:hover:bg-[rgba(184,117,59,0.1)]"
               >
-                Iniciar sesión
+                {t.nav_login}
               </button>
               <button
                 onClick={() => navigate("/register")}
                 className="px-4 py-2 rounded-xl text-[13px] font-medium transition-all duration-200 bg-[#965f21] hover:bg-[#6e4412] dark:bg-[#b8753b] dark:hover:bg-[#965f21] text-white border-none"
               >
-                Registrarse
+                {t.nav_register}
               </button>
             </div>
           ) : (
@@ -135,7 +146,9 @@ export default function Navbar() {
                 style={{
                   background: open ? "rgba(150, 95, 33, 0.1)" : "transparent",
                 }}
-                onMouseEnter={(e) => (e.currentTarget.style.background = "rgba(150, 95, 33, 0.08)")}
+                onMouseEnter={(e) =>
+                  (e.currentTarget.style.background = "rgba(150, 95, 33, 0.08)")
+                }
                 onMouseLeave={(e) =>
                   (e.currentTarget.style.background = open
                     ? "rgba(150, 95, 33, 0.1)"
@@ -143,19 +156,17 @@ export default function Navbar() {
                 }
               >
                 {/* Avatar */}
-                <div
-                  className="w-7 h-7 rounded-full flex items-center justify-center text-[12px] font-bold bg-[#965f21] dark:bg-[#b8753b] text-white"
-                >
+                <div className="w-7 h-7 rounded-full flex items-center justify-center text-[12px] font-bold bg-[#965f21] dark:bg-[#b8753b] text-white">
                   {userName.charAt(0).toUpperCase()}
                 </div>
-                <span
-                  className="text-[13px] font-medium hidden sm:block text-[#1a1208] dark:text-gray-100"
-                >
+                <span className="text-[13px] font-medium hidden sm:block text-[#1a1208] dark:text-gray-100">
                   {userName}
                 </span>
                 <svg
                   className="w-3.5 h-3.5 transition-transform duration-200 text-[rgba(150,95,33,0.6)] dark:text-gray-400"
-                  style={{ transform: open ? "rotate(180deg)" : "rotate(0deg)" }}
+                  style={{
+                    transform: open ? "rotate(180deg)" : "rotate(0deg)",
+                  }}
                   viewBox="0 0 24 24"
                   fill="none"
                   stroke="currentColor"
@@ -167,32 +178,35 @@ export default function Navbar() {
 
               {/* Dropdown */}
               {open && (
-                <div
-                  className="absolute right-0 mt-2 w-52 rounded-2xl overflow-hidden animate-fadeDown bg-[#fff9f2] dark:bg-gray-800 border border-[rgba(150,95,33,0.22)] dark:border-gray-600 shadow-lg"
-                >
+                <div className="absolute right-0 mt-2 w-52 rounded-2xl overflow-hidden animate-fadeDown bg-[#fff9f2] dark:bg-gray-800 border border-[rgba(150,95,33,0.22)] dark:border-gray-600 shadow-lg">
                   {/* Header */}
-                  <div
-                    className="px-4 py-3 border-b border-[rgba(150,95,33,0.12)] dark:border-gray-600"
-                  >
-                    <p
-                      className="text-[13px] font-semibold truncate text-[#1a1208] dark:text-gray-100"
-                    >
+                  <div className="px-4 py-3 border-b border-[rgba(150,95,33,0.12)] dark:border-gray-600">
+                    <p className="text-[13px] font-semibold truncate text-[#1a1208] dark:text-gray-100">
                       {userName}
                     </p>
-                    <p
-                      className="text-[11px] truncate text-[#9c8060] dark:text-gray-400"
-                    >
+                    <p className="text-[11px] truncate text-[#9c8060] dark:text-gray-400">
                       {userEmail}
                     </p>
                   </div>
 
                   {[
-                    { icon: "⚙️", label: "Configuración", path: "/configuracion" },
-                    { icon: "📬", label: "Contacto",       path: "/contacto" },
+                    {
+                      icon: "⚙️",
+                      label: t.nav_config,
+                      path: "/configuracion",
+                    },
+                    {
+                      icon: "📬",
+                      label: t.nav_contact,
+                      path: "/contacto",
+                    },
                   ].map((item) => (
                     <button
                       key={item.path}
-                      onClick={() => { navigate(item.path); setOpen(false); }}
+                      onClick={() => {
+                        navigate(item.path);
+                        setOpen(false);
+                      }}
                       className="w-full flex items-center gap-3 px-4 py-3 text-[13px] text-left transition-all duration-150 text-[#5c4a2a] dark:text-gray-300 hover:bg-[rgba(150,95,33,0.07)] dark:hover:bg-gray-700"
                       style={{ fontFamily: "'DM Sans', sans-serif" }}
                     >
@@ -209,7 +223,7 @@ export default function Navbar() {
                     style={{ fontFamily: "'DM Sans', sans-serif" }}
                   >
                     <span>🚪</span>
-                    Cerrar sesión
+                    {t.nav_logout}
                   </button>
                 </div>
               )}
