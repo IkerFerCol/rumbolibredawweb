@@ -21,14 +21,42 @@ export default function ContactoPage() {
     e.preventDefault();
     if(!form.name||!form.email||!form.message){ setError(t.contact_error); return; }
     setError(""); setLoading(true);
-    try{
-      await emailjs.send("YOUR_SERVICE_ID","YOUR_TEMPLATE_ID",
-        { from_name:form.name, from_email:form.email, subject:form.subject, message:form.message, to_email:"ikerfc09@gmail.com" },
-        "YOUR_PUBLIC_KEY"
+    
+    try {
+      // 📧 1. Enviar correo a ti (Contact Us)
+      await emailjs.send(
+        "service_bjnunki",           // ← Cambia por tu Service ID
+        "template_3wjh31w", // ← Cambia por tu Template ID de Contact Us
+        {
+          from_name: form.name,
+          from_email: form.email,
+          subject: form.subject,
+          message: form.message,
+          to_email: "ikerfc09@gmail.com"
+        },
+        "UdXS6zUnQy62pa6JY"            // ← Cambia por tu Public Key
       );
+
+      // 📧 2. Enviar correo de confirmación al usuario (Auto-reply)
+      await emailjs.send(
+        "service_bjnunki",           // ← El mismo Service ID
+        "template_k7355mt", // ← Cambia por tu Template ID de Auto-reply
+        {
+          to_name: form.name,
+          to_email: form.email,
+          subject: form.subject,
+          message: form.message
+        },
+        "UdXS6zUnQy62pa6JY"            // ← La misma Public Key
+      );
+
       setSent(true);
-    }catch(err){ console.error(err); setError("Hubo un error al enviar el mensaje."); }
-    finally{ setLoading(false); }
+    } catch(err) {
+      console.error("Error al enviar:", err);
+      setError("Hubo un error al enviar el mensaje. Inténtalo de nuevo.");
+    } finally {
+      setLoading(false);
+    }
   }
 
   return (
