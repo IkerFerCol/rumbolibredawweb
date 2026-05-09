@@ -1,16 +1,66 @@
-# React + Vite
+# ✈️ RumboLibre
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+RumboLibre es una aplicación web de gestión y reserva de vuelos desarrollada como proyecto final (TFG) del ciclo de Desarrollo de Aplicaciones Web (DAW).
 
-Currently, two official plugins are available:
+El objetivo del proyecto es simular el funcionamiento de una plataforma de búsqueda de vuelos, permitiendo a los usuarios consultar trayectos, gestionar reservas y visualizar información relacionada con sus viajes.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+---
 
-## React Compiler
+## 🎯 Objetivos
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- Desarrollar una aplicación web completa basada en arquitectura cliente-servidor  
+- Implementar una API REST funcional  
+- Gestionar información de vuelos y reservas en una base de datos relacional  
+- Aplicar buenas prácticas de desarrollo full stack  
 
-## Expanding the ESLint configuration
+---
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## 🛠️ Tecnologías utilizadas
+
+### 🔹 Frontend
+- React  
+- HTML5  
+- CSS3  
+- JavaScript  
+
+### 🔹 Backend
+- Spring Boot  
+- Java  
+- API REST  
+
+### 🔹 Base de datos
+- MySQL  
+
+---
+
+## 🧩 Arquitectura
+
+El proyecto sigue una arquitectura de tres capas:
+
+- **Frontend:** interfaz de usuario desarrollada en React  
+- **Backend:** API REST encargada de la lógica de negocio  
+- **Base de datos:** sistema relacional para el almacenamiento de datos  
+
+La comunicación entre el frontend y el backend se realiza mediante peticiones HTTP en formato JSON.
+
+---
+
+## ✨ Funcionalidades
+
+- 🔍 Búsqueda de vuelos  
+- 📅 Consulta de disponibilidad  
+- 👤 Gestión de usuarios  
+- 💳 Simulación de reservas  
+- 📊 Visualización de información de vuelos  
+
+---
+
+## 📚 Aprendizajes
+
+Este proyecto ha permitido aplicar conocimientos de desarrollo full stack, diseño de APIs REST, integración de sistemas y gestión de bases de datos relacionales.
+
+---
+
+## 📄 Licencia
+
+Proyecto desarrollado con fines educativos.
