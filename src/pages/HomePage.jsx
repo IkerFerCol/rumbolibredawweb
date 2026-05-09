@@ -3,7 +3,7 @@ import fondo from "../assets/fondoavionloginregister.jpg";
 import Footer from "../components/Footer";
 import Header from "../components/Header";
 import { motion, AnimatePresence } from "framer-motion";
-import axios from "axios";
+import api from "../services/api";
 import { useNavigate } from "react-router-dom";
 import api from "../services/api";
 import { useSettings } from "../context/SettingsContext";
@@ -673,7 +673,7 @@ export default function HomePage() {
   useEffect(() => {
     (async () => {
       setCargandoAeropuertos(true);
-      try { const r = await axios.get("http://localhost:8080/api/aeropuertos"); if (r.data?.length) setAeropuertos(r.data); }
+      try { const r = await axios.get("https://rumbolibredawapi.onrender.com/api/aeropuertos"); if (r.data?.length) setAeropuertos(r.data); }
       catch { /* usa estáticos */ }
       finally { setCargandoAeropuertos(false); }
     })();
@@ -687,7 +687,7 @@ export default function HomePage() {
       if (destino) p.append("destino", destino);
       if (fecha) p.append("fecha", fecha);
       p.append("pasajeros", "1");
-      const { data } = await axios.get(`http://localhost:8080/api/vuelos/disponibles?${p}`);
+      const { data } = await axios.get(`https://rumbolibredawapi.onrender.com/api/vuelos/disponibles?${p}`);
       setResultados(data);
       if (!data.length) setError(t.home_no_flights);
     } catch { setError("Error al buscar vuelos. Comprueba tu conexión."); setResultados([]); }
@@ -703,7 +703,7 @@ export default function HomePage() {
 
     try {
       const { data } = await axios.get(
-        `http://localhost:8080/api/vuelos/sorpresa?origen=${origenSorpresa}`
+        `https://rumbolibredawapi.onrender.com/api/vuelos/sorpresa?origen=${origenSorpresa}`
       );
 
       seleccionarVuelo(data);

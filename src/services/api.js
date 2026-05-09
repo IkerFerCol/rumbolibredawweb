@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: "http://localhost:8080/api",
+  baseURL: "https://rumbolibredawapi.onrender.com/api",  // ← AÑADE /api AQUÍ
   headers: { 
     "Content-Type": "application/json" 
   },
@@ -11,7 +11,6 @@ const api = axios.create({
 api.interceptors.request.use((config) => {
   const token = localStorage.getItem("token");
 
-  // Inyectar token automáticamente EXCEPTO en login/register
   if (
     token &&
     !config.url.includes("/usuarios/login") &&
@@ -42,7 +41,6 @@ api.interceptors.response.use(
       data: error.response?.data,
     });
 
-    // Manejo de token expirado / inválido
     if (error.response?.status === 401) {
       localStorage.removeItem("token");
       localStorage.removeItem("rl_user");

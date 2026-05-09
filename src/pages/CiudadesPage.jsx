@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
-import axios from "axios";
+import api from "../services/api";
 import { useSettings } from "../context/SettingsContext";
 
 const CITY_FACTS = {
@@ -79,7 +79,7 @@ export default function CiudadesPage() {
   useEffect(() => {
     (async()=>{
       setLoading(true);
-      try { const r=await axios.get("http://localhost:8080/api/aeropuertos"); if(r.data?.length) setCiudades(r.data); }
+      try { const r=await axios.get("https://rumbolibredawapi.onrender.com/api/aeropuertos"); if(r.data?.length) setCiudades(r.data); }
       catch { setError("No se pudieron cargar los destinos."); }
       finally { setLoading(false); }
     })();
