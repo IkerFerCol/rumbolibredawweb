@@ -6,6 +6,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import api from "../services/api";
 import { useSettings } from "../context/SettingsContext";
+import axios from "axios";
 
 const AEROPUERTOS_ESTATICOS = [
   { id: 1, nombre: "Adolfo Suárez Madrid-Barajas", codigoIata: "MAD", ciudad: "Madrid", pais: "España" },
