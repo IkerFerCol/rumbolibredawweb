@@ -3,7 +3,6 @@ import fondo from "../assets/fondoavionloginregister.jpg";
 import Footer from "../components/Footer";
 import Header from "../components/Header";
 import { motion, AnimatePresence } from "framer-motion";
-import api from "../services/api";
 import { useNavigate } from "react-router-dom";
 import api from "../services/api";
 import { useSettings } from "../context/SettingsContext";
