@@ -2,7 +2,7 @@ import { useState } from "react";
 import fondo from "../assets/fondoavionloginregister.jpg";
 import Footer from "../components/Footer";
 import api from "../services/api";
-import logo from "../assets/logorumbolibre.png";
+import logo from "../assets/logo.png";
 
 // ─── Estilos de animación ─────────────────────────────────────────────────────
 const animationStyles = `

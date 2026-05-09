@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useSettings } from "../context/SettingsContext";
-import logo from "../assets/logorumbolibre.png";
+import logo from "../assets/logo.png";
 
 const animationStyles = `
   @keyframes fadeDown {
