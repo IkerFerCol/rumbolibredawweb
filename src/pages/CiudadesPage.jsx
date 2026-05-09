@@ -3,6 +3,8 @@ import Header from "../components/Header";
 import Footer from "../components/Footer";
 import api from "../services/api";
 import { useSettings } from "../context/SettingsContext";
+import axios from "axios";
+
 
 const CITY_FACTS = {
   "Madrid":    { emoji:"🏛", bg:"linear-gradient(135deg,#e8d5b0 0%,#c9a96e 100%)", tags:["Arte","Gastronomía","Cultura"],      fact:"Madrid alberga el restaurante más antiguo del mundo, Sobrino de Botín, abierto desde 1725.", museums:"Más de 40", airports:1, temp:"15°C", currency:"Euro" },

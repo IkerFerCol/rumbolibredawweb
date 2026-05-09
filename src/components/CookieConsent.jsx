@@ -1,7 +1,9 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useLocation } from "react-router-dom";
 
 export default function CookieConsent() {
+  const location = useLocation();
   const [showConsent, setShowConsent] = useState(false);
   const [showPreferences, setShowPreferences] = useState(false);
   const [preferences, setPreferences] = useState({
@@ -58,7 +60,7 @@ export default function CookieConsent() {
     localStorage.setItem("cookieConsentDate", new Date().toISOString());
     setShowConsent(false);
     setShowPreferences(false);
-    
+
     // Aquí puedes inicializar o desactivar servicios según las preferencias
     applyConsent(consentPreferences);
   };
@@ -86,6 +88,11 @@ export default function CookieConsent() {
       console.log("Cookies funcionales activadas");
     }
   };
+
+  // Ocultar banner en login y register
+  if (location.pathname === "/login" || location.pathname === "/register") {
+    return null;
+  }
 
   return (
     <AnimatePresence>
@@ -117,8 +124,8 @@ export default function CookieConsent() {
                       </h3>
                     </div>
                     <p className="text-sm leading-relaxed" style={{ color: "rgba(255, 249, 242, 0.8)" }}>
-                      Utilizamos cookies propias y de terceros para mejorar tu experiencia de navegación, 
-                      analizar el tráfico y personalizar el contenido. Puedes aceptar todas las cookies, 
+                      Utilizamos cookies propias y de terceros para mejorar tu experiencia de navegación,
+                      analizar el tráfico y personalizar el contenido. Puedes aceptar todas las cookies,
                       rechazarlas o configurar tus preferencias.
                     </p>
                   </div>
@@ -231,8 +238,8 @@ export default function CookieConsent() {
                       className="w-10 h-6 rounded-full transition-all relative"
                       style={{ background: preferences.analytics ? "rgba(150, 95, 33, 0.5)" : "rgba(255, 249, 242, 0.2)" }}
                     >
-                      <div className="w-4 h-4 rounded-full bg-white absolute top-1 transition-all shadow-md" 
-                        style={{ left: preferences.analytics ? "22px" : "2px" }} 
+                      <div className="w-4 h-4 rounded-full bg-white absolute top-1 transition-all shadow-md"
+                        style={{ left: preferences.analytics ? "22px" : "2px" }}
                       />
                     </button>
                   </div>
@@ -250,8 +257,8 @@ export default function CookieConsent() {
                       className="w-10 h-6 rounded-full transition-all relative"
                       style={{ background: preferences.marketing ? "rgba(150, 95, 33, 0.5)" : "rgba(255, 249, 242, 0.2)" }}
                     >
-                      <div className="w-4 h-4 rounded-full bg-white absolute top-1 transition-all shadow-md" 
-                        style={{ left: preferences.marketing ? "22px" : "2px" }} 
+                      <div className="w-4 h-4 rounded-full bg-white absolute top-1 transition-all shadow-md"
+                        style={{ left: preferences.marketing ? "22px" : "2px" }}
                       />
                     </button>
                   </div>
@@ -269,8 +276,8 @@ export default function CookieConsent() {
                       className="w-10 h-6 rounded-full transition-all relative"
                       style={{ background: preferences.functional ? "rgba(150, 95, 33, 0.5)" : "rgba(255, 249, 242, 0.2)" }}
                     >
-                      <div className="w-4 h-4 rounded-full bg-white absolute top-1 transition-all shadow-md" 
-                        style={{ left: preferences.functional ? "22px" : "2px" }} 
+                      <div className="w-4 h-4 rounded-full bg-white absolute top-1 transition-all shadow-md"
+                        style={{ left: preferences.functional ? "22px" : "2px" }}
                       />
                     </button>
                   </div>
