@@ -12,27 +12,27 @@ const animationStyles = `
 `;
 
 const NAV_LINKS = [
-  { label: "Inicio",    path: "/",             key: "nav_home" },
-  { label: "Ciudades",  path: "/ciudades",     key: "nav_cities" },
-  { label: "Foro",      path: "/foro",         key: "nav_forum" },
-  { label: "Reservas",  path: "/reservas",     key: "nav_bookings" },
+  { label: "Inicio", path: "/", key: "nav_home" },
+  { label: "Ciudades", path: "/ciudades", key: "nav_cities" },
+  { label: "Foro", path: "/foro", key: "nav_forum" },
+  { label: "Reservas", path: "/reservas", key: "nav_bookings" },
 ];
 
 export default function Navbar() {
-  const navigate  = useNavigate();
-  const location  = useLocation();
+  const navigate = useNavigate();
+  const location = useLocation();
   const [open, setOpen] = useState(false);
   const ref = useRef(null);
 
   // ─── Obtener traducciones ─────────────────────────────────────────────────
   const { t } = useSettings(); // ← Añadir esta línea
 
-  const raw  = localStorage.getItem("token");
+  const raw = localStorage.getItem("token");
   const user = localStorage.getItem("rl_user")
     ? JSON.parse(localStorage.getItem("rl_user"))
     : raw
-    ? { nombre: "Usuario" }
-    : null;
+      ? { nombre: "Usuario" }
+      : null;
 
   useEffect(() => {
     const handler = (e) => {
@@ -47,6 +47,7 @@ export default function Navbar() {
     localStorage.removeItem("rl_user");
     setOpen(false);
     navigate("/login");
+    window.location.reload(); // ← Fuerza la recarga de la página
   }
 
   const isActive = (path) =>
@@ -150,9 +151,9 @@ export default function Navbar() {
                   (e.currentTarget.style.background = "rgba(150, 95, 33, 0.08)")
                 }
                 onMouseLeave={(e) =>
-                  (e.currentTarget.style.background = open
-                    ? "rgba(150, 95, 33, 0.1)"
-                    : "transparent")
+                (e.currentTarget.style.background = open
+                  ? "rgba(150, 95, 33, 0.1)"
+                  : "transparent")
                 }
               >
                 {/* Avatar */}
