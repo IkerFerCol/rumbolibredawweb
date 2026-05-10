@@ -1,12 +1,9 @@
 @import "tailwindcss";
 
-/* ✅ ACTIVAR DARK MODE EN TAILWIND v4 */
 @custom-variant dark (&:where(.dark, .dark *));
 
-/* O prueba esta otra sintaxis si la anterior no funciona: */
 @variant dark (&:where(.dark, .dark *));
 
-/* Tu tema personalizado */
 @theme {
   --color-primary-50: #C6B49F;
   --color-primary-100: #BBAC9B;

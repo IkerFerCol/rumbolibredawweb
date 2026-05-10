@@ -1,13 +1,12 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: "https://rumbolibredawapi.onrender.com/api",  // ← AÑADE /api AQUÍ
+  baseURL: "https://rumbolibredawapi.onrender.com/api", 
   headers: { 
     "Content-Type": "application/json" 
   },
 });
 
-// ─── INTERCEPTOR REQUEST ─────────────────────────────────────────────
 api.interceptors.request.use((config) => {
   const token = localStorage.getItem("token");
 
@@ -28,7 +27,6 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
-// ─── INTERCEPTOR RESPONSE ────────────────────────────────────────────
 api.interceptors.response.use(
   (response) => {
     console.log("✅ Response:", response.status);

@@ -5,7 +5,6 @@ import logo from "../assets/logo.png";
 import { useAuth } from "../context/AuthContext";
 
 
-// ─── Estilos de animación ─────────────────────────────────────────────────────
 const animationStyles = `
   @keyframes fadeInUp {
     from {
@@ -71,17 +70,13 @@ const animationStyles = `
   }
 `;
 
-// ─── Paleta de colores AirGold ────────────────────────────────────────────────
-// Color principal: rgba(150, 95, 33, 1)  →  #965f21
 
-// ─── Icono de avión ───────────────────────────────────────────────────────────
 const PlaneIcon = ({ className = "w-6 h-6" }) => (
   <svg className={className} viewBox="0 0 24 24" fill="currentColor">
     <path d="M21 16v-2l-8-5V3.5c0-.83-.67-1.5-1.5-1.5S10 2.67 10 3.5V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z" />
   </svg>
 );
 
-// ─── Icono ojo ────────────────────────────────────────────────────────────────
 const EyeIcon = ({ open }) =>
   open ? (
     <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
@@ -96,7 +91,6 @@ const EyeIcon = ({ open }) =>
     </svg>
   );
 
-// ─── Iconos de campos ─────────────────────────────────────────────────────────
 const MailIcon = () => (
   <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
     <rect x="2" y="4" width="20" height="16" rx="3" />
@@ -119,7 +113,6 @@ const AppleIcon = () => (
   </svg>
 );
 
-// ─── Componente: Campo de texto con icono ─────────────────────────────────────
 const InputField = ({
   label,
   id,
@@ -176,7 +169,6 @@ const InputField = ({
   </div>
 );
 
-// ─── Componente: Toast notification ──────────────────────────────────────────
 const Toast = ({ message, visible }) => (
   <div
     className="absolute top-4 left-1/2 z-50 px-5 py-2.5 rounded-xl text-[13px] font-medium whitespace-nowrap transition-all duration-300"
@@ -192,7 +184,6 @@ const Toast = ({ message, visible }) => (
   </div>
 );
 
-// ─── Componente: Botón social ─────────────────────────────────────────────────
 const SocialButton = ({ icon, label, onClick }) => (
   <button
     onClick={onClick}
@@ -217,7 +208,6 @@ const SocialButton = ({ icon, label, onClick }) => (
   </button>
 );
 
-// ─── Formulario: Login ────────────────────────────────────────────────────────
 const LoginForm = ({ onToast }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -347,7 +337,6 @@ const LoginForm = ({ onToast }) => {
   );
 };
 
-// ─── Componente principal: LoginPage ────────────────────────────────────────
 export default function LoginPage() {
   const [toast, setToast] = useState({ message: "", visible: false });
 

@@ -13,15 +13,14 @@ import Contacto from "./pages/ContactoPage";
 import Config from "./pages/ConfigPage";
 import TerminosCondiciones from "./pages/TerminosCondiciones";
 import PoliticaPrivacidad from "./pages/PoliticaPrivacidad";
-import PoliticaCookies from "./pages/PoliticaCookiesPage";  // ✅ Importar página de cookies
-import CookieConsent from "./components/CookieConsent";     // ✅ Importar banner de cookies
+import PoliticaCookies from "./pages/PoliticaCookiesPage";  
+import CookieConsent from "./components/CookieConsent";     
 
 export default function App() {
   return (
     <AuthProvider>
       <SettingsProvider>
         <BrowserRouter>
-          {/* ✅ Banner de cookies - Fuera de Routes para que aparezca en todas las páginas */}
           <CookieConsent />
           
           <Routes>
@@ -78,7 +77,6 @@ export default function App() {
                 <PoliticaPrivacidad />
               </ProtectedRoute>
             } />
-            {/* ✅ Nueva ruta para política de cookies */}
             <Route path="/politica-cookies" element={
               <ProtectedRoute>
                 <PoliticaCookies />

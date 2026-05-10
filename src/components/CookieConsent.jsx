@@ -7,17 +7,15 @@ export default function CookieConsent() {
   const [showConsent, setShowConsent] = useState(false);
   const [showPreferences, setShowPreferences] = useState(false);
   const [preferences, setPreferences] = useState({
-    necessary: true, // Siempre activas
+    necessary: true, 
     analytics: true,
     marketing: false,
     functional: true,
   });
 
   useEffect(() => {
-    // Verificar si ya se aceptaron las cookies
     const consent = localStorage.getItem("cookieConsent");
     if (!consent) {
-      // Mostrar banner después de un pequeño delay
       const timer = setTimeout(() => setShowConsent(true), 1000);
       return () => clearTimeout(timer);
     } else {
@@ -25,7 +23,6 @@ export default function CookieConsent() {
         const savedPreferences = JSON.parse(consent);
         setPreferences(savedPreferences);
       } catch {
-        // Si hay error, mostrar banner de nuevo
         setShowConsent(true);
       }
     }
@@ -61,35 +58,25 @@ export default function CookieConsent() {
     setShowConsent(false);
     setShowPreferences(false);
 
-    // Aquí puedes inicializar o desactivar servicios según las preferencias
     applyConsent(consentPreferences);
   };
 
   const applyConsent = (prefs) => {
-    // Ejemplo: Google Analytics
     if (prefs.analytics) {
-      // Inicializar Google Analytics
       console.log("Analytics activados");
-      // gtag('consent', 'update', { analytics_storage: 'granted' });
     } else {
-      // Desactivar Google Analytics
       console.log("Analytics desactivados");
-      // gtag('consent', 'update', { analytics_storage: 'denied' });
     }
 
-    // Ejemplo: Cookies de marketing
     if (prefs.marketing) {
       console.log("Marketing activado");
-      // Inicializar Facebook Pixel, etc.
     }
 
-    // Ejemplo: Cookies funcionales
     if (prefs.functional) {
       console.log("Cookies funcionales activadas");
     }
   };
 
-  // Ocultar banner en login y register
   if (location.pathname === "/login" || location.pathname === "/register") {
     return null;
   }
@@ -113,7 +100,6 @@ export default function CookieConsent() {
             }}
           >
             {!showPreferences ? (
-              // Banner principal
               <div className="p-6">
                 <div className="flex flex-col md:flex-row items-start md:items-center gap-6">
                   <div className="flex-1">
@@ -194,7 +180,6 @@ export default function CookieConsent() {
                 </div>
               </div>
             ) : (
-              // Panel de preferencias
               <div className="p-6">
                 <div className="flex items-center justify-between mb-6">
                   <div className="flex items-center gap-3">

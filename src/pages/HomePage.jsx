@@ -664,7 +664,6 @@ export default function HomePage() {
   const [vueloSeleccionado, setVueloSeleccionado] = useState(null);
   const [reservaExitosa, setReservaExitosa] = useState(null);
 
-  // Estados para el Vuelo Sorpresa
   const [origenSorpresa, setOrigenSorpresa] = useState("");
   const [cargandoSorpresa, setCargandoSorpresa] = useState(false);
 
@@ -674,7 +673,7 @@ export default function HomePage() {
     (async () => {
       setCargandoAeropuertos(true);
       try { const r = await axios.get("https://rumbolibredawapi.onrender.com/api/aeropuertos"); if (r.data?.length) setAeropuertos(r.data); }
-      catch { /* usa estáticos */ }
+      catch {  }
       finally { setCargandoAeropuertos(false); }
     })();
   }, []);
@@ -694,7 +693,6 @@ export default function HomePage() {
     finally { setBuscando(false); }
   }, [t]);
 
-  // Función para buscar vuelo sorpresa
   const buscarVueloSorpresa = async () => {
     if (!origenSorpresa) return;
 

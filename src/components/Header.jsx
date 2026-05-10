@@ -48,12 +48,10 @@ export default function Navbar() {
     return () => document.removeEventListener("mousedown", handler);
   }, []);
 
-  // Cerrar menú móvil al cambiar de ruta
   useEffect(() => {
     setMobileMenu(false);
   }, [location]);
 
-  // Prevenir scroll cuando el menú móvil está abierto
   useEffect(() => {
     if (mobileMenu) {
       document.body.style.overflow = "hidden";

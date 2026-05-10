@@ -2,14 +2,11 @@ import { createContext, useContext, useEffect, useState } from "react";
 
 const SettingsContext = createContext(null);
 
-// ─── Tasas de conversión base EUR ────────────────────────────────────────────
 export const CURRENCY_RATES = { EUR: 1, USD: 1.08, GBP: 0.86 };
 export const CURRENCY_SYMBOLS = { EUR: "€", USD: "$", GBP: "£" };
 
-// ─── Traducciones ─────────────────────────────────────────────────────────────
 export const TRANSLATIONS = {
   es: {
-    // Navbar
     nav_home: "Inicio",
     nav_cities: "Ciudades",
     nav_forum: "Foro",
@@ -20,7 +17,6 @@ export const TRANSLATIONS = {
     nav_contact: "Contacto",
     nav_logout: "Cerrar sesión",
 
-    // HomePage
     home_title: "Encuentra tu próximo vuelo",
     home_subtitle: "Los mejores precios en vuelos con RumboLibre",
     home_origin: "Origen",
@@ -43,7 +39,6 @@ export const TRANSLATIONS = {
     home_methods: "Múltiples métodos",
     home_methods_desc: "Paga como quieras",
 
-    // Reserva drawer
     booking_title: "Completar reserva",
     booking_passengers: "Número de pasajeros",
     booking_passenger: "Pasajero",
@@ -70,7 +65,6 @@ export const TRANSLATIONS = {
     booking_expiry: "Caducidad",
     booking_paypal_msg: "Serás redirigido a PayPal para completar el pago.",
 
-    // Modal éxito reserva
     booking_success: "¡Reserva confirmada!",
     booking_success_sub: "Tu vuelo ha sido reservado con éxito",
     booking_code: "Código",
@@ -80,7 +74,6 @@ export const TRANSLATIONS = {
     booking_keep: "Seguir buscando",
     booking_view: "Ver mis reservas",
 
-    // Reservas page
     res_title: "Mis Reservas",
     res_subtitle: "Gestiona todas tus reservas de vuelo",
     res_loading: "Cargando reservas...",
@@ -123,7 +116,6 @@ export const TRANSLATIONS = {
     res_reference: "Referencia",
     res_passengers: "Pasajeros",
 
-    // Ciudades
     cities_title: "Destinos del mundo",
     cities_sub: "Descubre datos, curiosidades y vuelos hacia cada destino",
     cities_search: "Buscar ciudad, país o código IATA...",
@@ -140,7 +132,6 @@ export const TRANSLATIONS = {
     cities_airports: "Aeropuertos",
     cities_retry: "Reintentar",
 
-    // Foro
     foro_title: "Foro de viajeros",
     foro_sub: "Comparte tu experiencia y descubre los consejos de otros viajeros",
     foro_new: "✍️ Nuevo tema",
@@ -166,7 +157,6 @@ export const TRANSLATIONS = {
     foro_del_err: "No se pudo eliminar el tema.",
     foro_user_num: "Usuario #",
 
-    // Contacto
     contact_title: "Contacto",
     contact_sub: "¿Tienes alguna duda o problema? Estamos aquí para ayudarte",
     contact_email: "Email",
@@ -192,7 +182,6 @@ export const TRANSLATIONS = {
       "Otro",
     ],
 
-    // Configuración
     config_title: "Configuración",
     config_sub: "Personaliza tu experiencia en RumboLibre",
     config_profile: "Información personal",
@@ -221,7 +210,6 @@ export const TRANSLATIONS = {
     config_role: "Rol",
     config_userid: "ID de usuario",
 
-    // Login
     login_title: "Bienvenido de nuevo",
     login_sub: "Inicia sesión en tu cuenta RumboLibre",
     login_email: "Correo electrónico",
@@ -234,7 +222,6 @@ export const TRANSLATIONS = {
     login_no_acc: "¿No tienes una cuenta?",
     login_create: "Crea una aquí",
 
-    // Register
     reg_title: "Crea tu cuenta",
     reg_sub: "Únete a miles de viajeros en RumboLibre",
     reg_name: "Nombre completo",
@@ -249,14 +236,12 @@ export const TRANSLATIONS = {
     reg_have_acc: "¿Ya tienes cuenta?",
     reg_login: "Inicia sesión",
 
-    // Footer
     footer_rights: "Todos los derechos reservados",
     footer_privacy: "Política de privacidad",
     footer_terms: "Términos y condiciones",
   },
 
   en: {
-    // Navbar
     nav_home: "Home",
     nav_cities: "Cities",
     nav_forum: "Forum",
@@ -267,7 +252,6 @@ export const TRANSLATIONS = {
     nav_contact: "Contact",
     nav_logout: "Log out",
 
-    // HomePage
     home_title: "Find your next flight",
     home_subtitle: "The best flight prices with RumboLibre",
     home_origin: "Origin",
@@ -290,7 +274,6 @@ export const TRANSLATIONS = {
     home_methods: "Multiple methods",
     home_methods_desc: "Pay your way",
 
-    // Vuelo sorpresa
     home_surprise_title: "Vuelo Sorpresa",
     home_surprise_desc: "¿No sabes dónde viajar? Selecciona tu aeropuerto de origen y RumboLibre elegirá aleatoriamente un destino para ti. Descubre ciudades inesperadas y vive una experiencia diferente.",
     home_surprise_placeholder: "Selecciona aeropuerto de origen",
@@ -307,7 +290,6 @@ export const TRANSLATIONS = {
     home_surprise_error_empty: "No surprise flights found. Try another origin!",
     home_surprise_error_generic: "Error searching for surprise flight. Please try again.",
 
-    // Reserva drawer
     booking_title: "Complete booking",
     booking_passengers: "Number of passengers",
     booking_passenger: "Passenger",
@@ -334,7 +316,6 @@ export const TRANSLATIONS = {
     booking_expiry: "Expiry",
     booking_paypal_msg: "You will be redirected to PayPal to complete payment.",
 
-    // Modal éxito reserva
     booking_success: "Booking confirmed!",
     booking_success_sub: "Your flight has been booked successfully",
     booking_code: "Code",
@@ -344,7 +325,6 @@ export const TRANSLATIONS = {
     booking_keep: "Keep searching",
     booking_view: "View my bookings",
 
-    // Reservas page
     res_title: "My Bookings",
     res_subtitle: "Manage all your flight bookings",
     res_loading: "Loading bookings...",
@@ -387,7 +367,6 @@ export const TRANSLATIONS = {
     res_reference: "Reference",
     res_passengers: "Passengers",
 
-    // Ciudades
     cities_title: "World destinations",
     cities_sub: "Discover facts, curiosities and flights to each destination",
     cities_search: "Search city, country or IATA code...",
@@ -404,7 +383,6 @@ export const TRANSLATIONS = {
     cities_airports: "Airports",
     cities_retry: "Retry",
 
-    // Foro
     foro_title: "Travellers Forum",
     foro_sub: "Share your experience and discover tips from other travellers",
     foro_new: "✍️ New topic",
@@ -430,7 +408,6 @@ export const TRANSLATIONS = {
     foro_del_err: "Could not delete the topic.",
     foro_user_num: "User #",
 
-    // Contacto
     contact_title: "Contact",
     contact_sub: "Have a question or problem? We're here to help",
     contact_email: "Email",
@@ -456,7 +433,6 @@ export const TRANSLATIONS = {
       "Other",
     ],
 
-    // Configuración
     config_title: "Settings",
     config_sub: "Customize your RumboLibre experience",
     config_profile: "Personal information",
@@ -485,7 +461,6 @@ export const TRANSLATIONS = {
     config_role: "Role",
     config_userid: "User ID",
 
-    // Login
     login_title: "Welcome back",
     login_sub: "Log in to your RumboLibre account",
     login_email: "Email address",
@@ -498,7 +473,6 @@ export const TRANSLATIONS = {
     login_no_acc: "Don't have an account?",
     login_create: "Create one here",
 
-    // Register
     reg_title: "Create your account",
     reg_sub: "Join thousands of travellers on RumboLibre",
     reg_name: "Full name",
@@ -513,7 +487,6 @@ export const TRANSLATIONS = {
     reg_have_acc: "Already have an account?",
     reg_login: "Log in",
 
-    // Footer
     footer_rights: "All rights reserved",
     footer_privacy: "Privacy policy",
     footer_terms: "Terms and conditions",
@@ -532,7 +505,6 @@ export function SettingsProvider({ children }) {
     }
   });
 
-  // Aplicar tema al arrancar
   useEffect(() => {
     applyTheme(preferences.theme);
   }, []);
@@ -552,7 +524,6 @@ export function SettingsProvider({ children }) {
     if (key === "theme") applyTheme(value);
   }
 
-  // Función de formateo de precio
   function formatPrice(amountEUR) {
     if (amountEUR == null) return "—";
     const rate = CURRENCY_RATES[preferences.currency] || 1;
@@ -560,7 +531,6 @@ export function SettingsProvider({ children }) {
     return `${symbol}${(amountEUR * rate).toFixed(2)}`;
   }
 
-  // Traducciones activas
   const t = TRANSLATIONS[preferences.language] || TRANSLATIONS.es;
 
   return (

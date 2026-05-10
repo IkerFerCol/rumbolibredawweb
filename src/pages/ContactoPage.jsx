@@ -23,10 +23,9 @@ export default function ContactoPage() {
     setError(""); setLoading(true);
     
     try {
-      // 📧 1. Enviar correo a ti (Contact Us)
       await emailjs.send(
-        "service_bjnunki",           // ← Cambia por tu Service ID
-        "template_3wjh31w", // ← Cambia por tu Template ID de Contact Us
+        "service_bjnunki",       
+        "template_3wjh31w",
         {
           from_name: form.name,
           from_email: form.email,
@@ -34,20 +33,19 @@ export default function ContactoPage() {
           message: form.message,
           to_email: "ikerfc09@gmail.com"
         },
-        "UdXS6zUnQy62pa6JY"            // ← Cambia por tu Public Key
+        "UdXS6zUnQy62pa6JY"           
       );
 
-      // 📧 2. Enviar correo de confirmación al usuario (Auto-reply)
       await emailjs.send(
-        "service_bjnunki",           // ← El mismo Service ID
-        "template_k7355mt", // ← Cambia por tu Template ID de Auto-reply
+        "service_bjnunki",          
+        "template_k7355mt", 
         {
           to_name: form.name,
           to_email: form.email,
           subject: form.subject,
           message: form.message
         },
-        "UdXS6zUnQy62pa6JY"            // ← La misma Public Key
+        "UdXS6zUnQy62pa6JY"           
       );
 
       setSent(true);

@@ -39,7 +39,6 @@ export function AuthProvider({ children }) {
 
   async function login(email, password) {
     try {
-      // Limpiar cualquier token viejo
       localStorage.removeItem('token');
       localStorage.removeItem('rl_user');
       delete api.defaults.headers.common['Authorization'];
@@ -48,7 +47,6 @@ export function AuthProvider({ children }) {
       const response = await api.post('/usuarios/login', { email, password });
       console.log('Respuesta login:', response.data);
       
-      // ✅ CORREGIDO: El backend devuelve los datos directamente
       const { token, ...userData } = response.data;
       
       if (!token) {
@@ -56,14 +54,11 @@ export function AuthProvider({ children }) {
         return { success: false, message: 'Error: No se recibió token' };
       }
       
-      // Guardar token y datos del usuario (sin el token)
       localStorage.setItem('token', token);
       localStorage.setItem('rl_user', JSON.stringify(userData));
       
-      // Configurar header para futuras peticiones
       api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
       
-      // Guardar usuario en el estado (sin el token)
       setUser(userData);
       
       return { success: true };
